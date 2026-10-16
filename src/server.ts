@@ -56,7 +56,18 @@ if (paywallOff) console.warn("PAYWALL=off: services are FREE. Local testing only
 if (config.demoFaults) console.warn("DEMO_FAULTS=1: x-demo-fault header is honoured. Never enable in production.");
 if (config.payTo === "0x0000000000000000000000000000000000000000") console.warn("PAY_TO is not set: payments would go nowhere.");
 
-serve({ fetch: app.fetch, port: config.port }, (info) => {
+/**
+ * Behind a TLS-terminating proxy (Render) requests arrive as http://. Restore the public
+ * https:// URL so the x402 challenge advertises the same resource the buyer requested.
+ */
+const fetchBehindProxy = (req: Request) => {
+  if (req.headers.get("x-forwarded-proto") === "https" && req.url.startsWith("http://")) {
+    return app.fetch(new Request(req.url.replace(/^http:/, "https:"), req));
+  }
+  return app.fetch(req);
+};
+
+serve({ fetch: fetchBehindProxy, port: config.port }, (info) => {
   console.log(`PayBox Tribunal on http://localhost:${info.port}`);
   console.log(`  network ${config.network} → ${config.payTo}`);
   console.log(`  services: ${services.map((s) => `${s.id} (${s.price})`).join(", ")}`);
