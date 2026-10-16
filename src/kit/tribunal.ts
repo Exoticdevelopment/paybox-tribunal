@@ -18,7 +18,7 @@ import {
 import { compilePromises } from "./compiler.ts";
 import { runCrashTest, type CrashReport } from "./crashtest.ts";
 import { callUpstream, inferSchema, proxyGuarantee, proxyInputSchema, slugify, ProxyInput, type ProxyDef } from "./proxy.ts";
-import { caseHtml, contractsHtml, dashboardHtml } from "./dashboard.ts";
+import { caseHtml, contractsHtml, dashboardHtml, keyHtml } from "./dashboard.ts";
 import { CERTAINTY_NOTE, type Promise_ } from "./promises.ts";
 import { TRUST_METHOD, trustReport } from "./trust.ts";
 import type { AnyGuarantee, JudgeFn } from "./types.ts";
@@ -695,7 +695,9 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
   // ---------- Proof-Carrying Payments certificates ----------
 
   app.get("/certificates/key", (c) =>
-    c.json({ algorithm: "Ed25519", encoding: "signature = base64(Ed25519(canonical JSON of certificate))", publicKey: signer.publicKeyPem }),
+    c.req.header("accept")?.includes("text/html")
+      ? c.html(keyHtml())
+      : c.json({ algorithm: "Ed25519", encoding: "signature = base64(Ed25519(canonical JSON of certificate))", publicKey: signer.publicKeyPem }),
   );
 
   app.get("/certificates/:id", (c) => {

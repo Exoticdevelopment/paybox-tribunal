@@ -20,6 +20,13 @@ export function contractsHtml(): string {
   return CONTRACTS_PAGE;
 }
 
+const KEY_PAGE = readFileSync(new URL("./key.html", import.meta.url), "utf8");
+
+/** Human-readable signing key and verifier. Agents get JSON from the same URL. */
+export function keyHtml(): string {
+  return KEY_PAGE;
+}
+
 export function dashboardHtml(): string {
   return PAGE;
 }

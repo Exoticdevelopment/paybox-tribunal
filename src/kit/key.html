@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verify a verdict · PayBox Tribunal</title>
+<link rel="icon" href="/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #0052ff; --ink: #0a0b0d; --body: #5b616e; --muted: #7c828a; --hairline: #dee1e6;
+    --canvas: #ffffff; --soft: #f7f7f7; --strong: #eef0f3; --dark: #0a0b0d; --on-dark-soft: #a8acb3;
+    --up: #05b169; --down: #cf202f;
+    --font: "Inter", -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--soft); color: var(--body); font: 400 16px/1.5 var(--font); }
+  a { color: var(--primary); text-decoration: none; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+  nav { background: var(--canvas); border-bottom: 1px solid var(--strong); }
+  nav .wrap { height: 64px; display: flex; align-items: center; justify-content: space-between; max-width: 1200px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--ink); }
+  header { background: var(--dark); color: var(--on-dark-soft); padding: 56px 0 72px; }
+  header h1 { color: #fff; font-size: 52px; font-weight: 400; letter-spacing: -1.3px; line-height: 1.05; margin: 0; }
+  header p { max-width: 720px; font-size: 18px; margin: 16px 0 0; }
+  main .wrap { display: grid; gap: 24px; margin-top: -40px; padding-bottom: 64px; }
+  .card { background: var(--canvas); border: 1px solid var(--hairline); border-radius: 24px; padding: 32px; min-width: 0; }
+  .card h2 { color: var(--ink); font-size: 26px; font-weight: 400; letter-spacing: -.4px; margin: 0 0 8px; }
+  pre { background: var(--soft); border-radius: 12px; padding: 16px; font: 13px/1.55 var(--mono); color: var(--ink); overflow-x: auto; margin: 16px 0 0; white-space: pre; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 16px; }
+  .btn { display: inline-flex; align-items: center; height: 44px; padding: 0 20px; border-radius: 100px; border: 0; font: 600 15px var(--font); cursor: pointer; background: var(--strong); color: var(--ink); }
+  .btn.primary { background: var(--primary); color: #fff; }
+  input { flex: 1; min-width: 240px; height: 48px; border: 1px solid var(--hairline); border-radius: 12px; padding: 0 16px; font: 14px var(--mono); color: var(--ink); }
+  input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+  .step { background: var(--soft); border-radius: 16px; padding: 20px; font-size: 15px; }
+  .step b { display: block; color: var(--ink); margin-bottom: 4px; }
+  .result { margin-top: 20px; border-radius: 16px; padding: 20px; display: none; }
+  .result.ok { display: block; background: #e3f6ee; color: #048a52; }
+  .result.bad { display: block; background: #fbe9eb; color: var(--down); }
+  .result h3 { margin: 0 0 4px; font-size: 20px; font-weight: 600; }
+  @media (max-width: 760px) { .steps { grid-template-columns: 1fr; } header h1 { font-size: 36px; } .card { padding: 24px; } }
+</style>
+</head>
+<body>
+<nav><div class="wrap"><a class="brand" href="/"><img src="/logo.svg" width="28" height="28" alt="">PayBox Tribunal</a><a href="/#live">All verdicts →</a></div></nav>
+<header><div class="wrap">
+  <h1>Don't trust us. Verify.</h1>
+  <p>Every verdict comes with a certificate signed by this server. Anyone can check it with the public key below: if a single field were changed, the signature would fail.</p>
+</div></header>
+<main><div class="wrap">
+
+  <section class="card">
+    <h2>Verify a verdict</h2>
+    <p>Paste a case ID (it comes with every paid response, and in the verdict feed).</p>
+    <div class="row">
+      <input id="case" placeholder="e.g. 3f2b8c1e-…" spellcheck="false">
+      <button class="btn primary" id="go">Verify</button>
+    </div>
+    <div class="result" id="result"></div>
+  </section>
+
+  <section class="card">
+    <h2>Public key</h2>
+    <p>Ed25519. The signature covers the canonical JSON of the certificate (keys sorted at every level).</p>
+    <pre id="key">Loading…</pre>
+    <div class="row"><button class="btn" id="copy">Copy key</button><a class="btn" href="/certificates/key" id="json">Machine-readable JSON</a></div>
+  </section>
+
+  <section class="card">
+    <h2>What a certificate proves</h2>
+    <div class="steps">
+      <div class="step"><b>The promise</b>The exact contract version and hash the result was judged under.</div>
+      <div class="step"><b>The evidence</b>The hash of the exact output evaluated, every rule result, and the AI judge's ruling.</div>
+      <div class="step"><b>The payment</b>Bound to the buyer's signed authorization and its nonce, so it can't be reused for another payment.</div>
+    </div>
+    <p style="margin-top:16px">It does not prove the output is true, and it can't stop a seller from settling outside Tribunal. That's why every verdict is also public.</p>
+  </section>
+
+  <section class="card">
+    <h2>Verify it yourself, without this page</h2>
+    <p>Node.js, no dependencies:</p>
+<pre>import { verify } from "node:crypto";
+
+const base = "https://paybox-tribunal.onrender.com";
+const { certificate, signature } = await (await fetch(`${base}/certificates/CASE_ID`)).json();
+const { publicKey } = await (await fetch(`${base}/certificates/key`, { headers: { accept: "application/json" } })).json();
+
+const canonical = (v) => Array.isArray(v) ? v.map(canonical)
+  : v && typeof v === "object" ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, canonical(v[k])])) : v;
+
+console.log(verify(null, Buffer.from(JSON.stringify(canonical(certificate))), publicKey, Buffer.from(signature, "base64")));</pre>
+  </section>
+
+</div></main>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  let publicKey = "";
+  fetch("/certificates/key", { headers: { accept: "application/json" } }).then((r) => r.json()).then((k) => { publicKey = k.publicKey; $("key").textContent = k.publicKey.trim(); });
+  $("copy").onclick = async () => { try { await navigator.clipboard.writeText(publicKey); $("copy").textContent = "Copied"; } catch { $("copy").textContent = "Select and copy above"; } };
+
+  const show = (ok, html) => { const r = $("result"); r.className = "result " + (ok ? "ok" : "bad"); r.innerHTML = html; };
+  $("go").onclick = async () => {
+    const id = $("case").value.trim();
+    if (!/^[0-9a-f-]{36}$/i.test(id)) return show(false, "<h3>That doesn't look like a case ID.</h3>");
+    const res = await fetch(`/certificates/${id}`);
+    if (!res.ok) return show(false, "<h3>Case not found.</h3>");
+    const { certificate, signature, payment } = await res.json();
+    const check = await fetch("/certificates/verify", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ certificate, signature }) }).then((r) => r.json());
+    if (!check.valid) return show(false, "<h3>✕ Invalid signature</h3>This certificate was not signed by this server, or it was modified.");
+    show(true, `<h3>✓ Valid signature</h3>${esc(certificate.service)} · ${certificate.decision === "delivered" ? "promise kept" : "promise broken"} · ${payment.status === "settled" ? "charged" : "not charged"} · contract v${esc(certificate.contract.version)}<br><a href="/cases/${esc(id)}">See promise, evidence and payment →</a>`);
+  };
+</script>
+</body>
+</html>
