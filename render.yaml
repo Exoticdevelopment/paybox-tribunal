@@ -27,5 +27,7 @@ services:
         generateValue: true
       - key: ANTHROPIC_API_KEY
         sync: false
+      - key: GEMINI_API_KEY # free tier at aistudio.google.com; used when no Anthropic key is set
+        sync: false
       - key: LLM_MODEL
         value: claude-opus-5-5

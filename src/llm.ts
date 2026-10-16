@@ -20,6 +20,7 @@ export function llmAvailable(): boolean {
 /**
  * One structured call to Claude, through whichever backend is configured:
  * - api: Anthropic API (needs ANTHROPIC_API_KEY). Use this when deployed.
+ * - gemini: Google Gemini (needs GEMINI_API_KEY; free tier). Also fine when deployed.
  * - cli: local `claude -p` (Claude Code on your own subscription). Local testing only.
  * - off: returns null; callers fall back to deterministic behaviour.
  * Returns null on refusal, timeout or unparseable output, never throws.
@@ -27,6 +28,7 @@ export function llmAvailable(): boolean {
 export async function structured<T>(req: StructuredRequest<T>): Promise<T | null> {
   try {
     if (config.llmBackend === "api") return await viaApi(req);
+    if (config.llmBackend === "gemini") return await viaGemini(req);
     if (config.llmBackend === "cli") return await viaCli(req);
     return null;
   } catch (error) {
@@ -48,6 +50,40 @@ async function viaApi<T>(req: StructuredRequest<T>): Promise<T | null> {
   });
   if (response.stop_reason === "refusal") return null;
   return (response.parsed_output as T | null) ?? null;
+}
+
+/**
+ * Google Gemini (free tier available). JSON mode plus the schema in the prompt; the reply is
+ * validated against the same zod schema as every other backend, so a malformed answer is
+ * treated exactly like no answer.
+ */
+async function viaGemini<T>(req: StructuredRequest<T>): Promise<T | null> {
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${config.geminiModel}:generateContent`, {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-goog-api-key": config.geminiKey ?? "" },
+    signal: AbortSignal.timeout(45_000),
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: req.system }] },
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              text: `${req.user}\n\nRespond with ONLY a JSON object that matches this JSON Schema:\n${JSON.stringify(z.toJSONSchema(req.schema))}`,
+            },
+          ],
+        },
+      ],
+      generationConfig: { responseMimeType: "application/json", temperature: 0 },
+    }),
+  });
+  if (!res.ok) throw new Error(`Gemini answered ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  const body = (await res.json()) as { candidates?: { content?: { parts?: { text?: string }[] }; finishReason?: string }[] };
+  const text = body.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
+  const json = extractJson(text);
+  if (json === undefined) return null;
+  const parsed = req.schema.safeParse(json);
+  return parsed.success ? parsed.data : null;
 }
 
 const CLI_TIMEOUT_MS = 180_000;
