@@ -44,7 +44,12 @@ catalog of 9 rule types**, so the AI never writes code that runs:
 - Subjective promises, and promises about fields the service doesn't have, are **refused, never invented**.
 - Nothing is enforced until the seller **confirms**. Each publish is a new contract version (1.1.0, 1.2.0…);
   every case pins the version it was judged under, and appeals use those promises, never newer ones.
-- Works offline with a rule-based parser (Spanish and English); uses Claude when an AI backend is configured.
+- **Languages.** Without AI, a rule-based parser understands common phrasings in **English and Spanish**
+  ("at most 25 words" / "máximo 25 palabras", "between 0 and 60" / "entre 0 y 60", "never invents figures" /
+  "no inventa cifras", "no older than 60 seconds" / "menos de 60 segundos de antigüedad", "always includes X" /
+  "siempre incluye X"). Wording it doesn't recognise becomes a promise for the AI judge or is marked *not
+  guaranteed*; it never invents a rule. With an AI backend configured, Claude compiles any wording in any language
+  into the same closed catalog.
 
 `POST /<service>/promises/compile { text }` → draft · `POST /<service>/promises/publish { draftId, confirm: true }`
 (needs `x-admin-token` when deployed) · `GET /<service>/promises` → current version and history.
