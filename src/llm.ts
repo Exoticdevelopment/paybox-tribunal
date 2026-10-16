@@ -46,7 +46,23 @@ export async function llmHealthCheck() {
   return { ...llmStatus(), ok: answer?.ok === true, ms: Date.now() - started };
 }
 
+// Identical questions get the identical answer instantly (temperature 0), so a busy model
+// never breaks a demo that was already run once. Only successful answers are cached.
+const answers = new Map<string, unknown>();
+const MAX_CACHED = 500;
+
 export async function structured<T>(req: StructuredRequest<T>): Promise<T | null> {
+  const key = JSON.stringify([config.llmBackend, req.system, req.user, z.toJSONSchema(req.schema)]);
+  if (answers.has(key)) return answers.get(key) as T;
+  const answer = await structuredUncached(req);
+  if (answer !== null && req.user !== 'Reply with {"ok": true}.') {
+    if (answers.size >= MAX_CACHED) answers.delete(answers.keys().next().value!);
+    answers.set(key, answer);
+  }
+  return answer;
+}
+
+async function structuredUncached<T>(req: StructuredRequest<T>): Promise<T | null> {
   try {
     if (config.llmBackend === "api") return await viaApi(req);
     if (config.llmBackend === "gemini") return await viaGemini(req);
@@ -86,7 +102,9 @@ const GEMINI_FALLBACKS = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-f
 async function viaGemini<T>(req: StructuredRequest<T>): Promise<T | null> {
   const models = [...new Set([config.geminiModel, ...GEMINI_FALLBACKS])];
   let lastFailure: unknown;
-  for (const model of models) {
+  // Two rounds over the free models, with a short pause, before giving up.
+  for (const model of [...models, ...models]) {
+    if (lastFailure) await new Promise((r) => setTimeout(r, 1500));
     try {
       return await geminiCall(model, req);
     } catch (error) {

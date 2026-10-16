@@ -72,4 +72,22 @@ serve({ fetch: fetchBehindProxy, port: config.port }, (info) => {
   console.log(`  network ${config.network} → ${config.payTo}`);
   console.log(`  services: ${services.map((s) => `${s.id} (${s.price})`).join(", ")}`);
   console.log(`  AI: ${config.llmBackend}${config.llmBackend === "api" ? ` (${config.llmModel})` : ""}`);
+  if (config.llmBackend !== "off") void warmUp(info.port);
 });
+
+/** Pre-computes the AI answers for the demos on the public page, so judges get them instantly. */
+async function warmUp(port: number) {
+  const demos: [string, unknown][] = [
+    ["/summary/promises/compile", { text: "The summary must be in English, at most 25 words, never invents figures, never contradicts the text, with a professional tone" }],
+    ["/invoice/crash-test", undefined],
+    ["/summary/crash-test", undefined],
+  ];
+  for (const [path, body] of demos) {
+    try {
+      await fetch(`http://localhost:${port}${path}`, body
+        ? { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }
+        : undefined);
+    } catch {}
+  }
+  console.log("  AI demos warmed up");
+}
