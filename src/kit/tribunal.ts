@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { Hono, type Context, type MiddlewareHandler } from "hono";
 import { z } from "zod";
 import { config } from "../config.ts";
+import { llmAvailable } from "../llm.ts";
 import { NO_PAYMENT, readPayment, type PaymentInfo } from "../payment.ts";
 import type { Case, Db, PaymentEvent, Voucher } from "../store/db.ts";
 import { viemChainReader, type ChainReader } from "./chain.ts";
@@ -17,7 +18,7 @@ import {
 import { compilePromises } from "./compiler.ts";
 import { runCrashTest, type CrashReport } from "./crashtest.ts";
 import { callUpstream, inferSchema, proxyGuarantee, proxyInputSchema, slugify, ProxyInput, type ProxyDef } from "./proxy.ts";
-import { caseHtml, dashboardHtml } from "./dashboard.ts";
+import { caseHtml, contractsHtml, dashboardHtml } from "./dashboard.ts";
 import { CERTAINTY_NOTE, type Promise_ } from "./promises.ts";
 import { TRUST_METHOD, trustReport } from "./trust.ts";
 import type { AnyGuarantee, JudgeFn } from "./types.ts";
@@ -173,7 +174,8 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
     input: schemasOf(g).input,
     output: schemasOf(g).output,
     guarantees: g.guarantees,
-    aiJudge: Boolean(effective(g).judge),
+    // True only when a judge is defined for this service AND an AI backend is actually configured.
+    aiJudge: Boolean(effective(g).judge) && llmAvailable(),
     appealWindowHours: config.appealWindowMs / 3_600_000,
     creditHeader: VOUCHER_HEADER,
   });
@@ -209,7 +211,10 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
   app.get("/dashboard", (c) => c.html(dashboardHtml()));
   app.get("/cases/:id", (c) => c.html(caseHtml()));
   app.get("/logo.svg", (c) => c.body(LOGO, 200, { "content-type": "image/svg+xml", "cache-control": "public, max-age=86400" }));
-  app.get("/contracts", (c) => c.json(allGuarantees().map(contractOf)));
+  app.get("/contracts", (c) => {
+    if (c.req.header("accept")?.includes("text/html")) return c.html(contractsHtml());
+    return c.json(allGuarantees().map(contractOf));
+  });
   app.get("/:service/contract", (c) => {
     const g = lookup(c.req.param("service"));
     return g ? c.json(contractOf(g)) : c.json({ error: "unknown_service" }, 404);

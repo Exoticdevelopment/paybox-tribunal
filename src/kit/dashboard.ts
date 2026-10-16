@@ -13,6 +13,13 @@ export function caseHtml(): string {
   return CASE_PAGE;
 }
 
+const CONTRACTS_PAGE = readFileSync(new URL("./contracts.html", import.meta.url), "utf8");
+
+/** Human-readable contracts. Agents get JSON from the same URL. */
+export function contractsHtml(): string {
+  return CONTRACTS_PAGE;
+}
+
 export function dashboardHtml(): string {
   return PAGE;
 }
