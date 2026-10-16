@@ -1,0 +1,38 @@
+{
+  "_draft_note": "Modeled on moonpay/paybox-plugin (.grok-plugin/plugin.json). The real marketplace format is unconfirmed until Chapter Details are published on Oct 16. Fill in the TODOs then.",
+  "name": "paybox-tribunal",
+  "displayName": "PayBox Tribunal",
+  "version": "0.1.0",
+  "description": "Guaranteed paid services for agents: invoice extraction and faithful summaries, checked against a published contract before your x402 payment settles. Failed results are never charged. Public verdicts, appeals with credits, and a live trust score.",
+  "publisher": {
+    "name": "TODO",
+    "url": "TODO"
+  },
+  "license": "MIT",
+  "repository": "TODO",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "paybox",
+    "x402",
+    "guarantee",
+    "pay on delivery",
+    "invoice",
+    "receipt",
+    "summary",
+    "merchant tools",
+    "trust score"
+  ],
+  "skills": [
+    "skills/tribunal"
+  ],
+  "service": {
+    "baseUrl": "TODO: deployed URL",
+    "contracts": "/contracts",
+    "endpoints": [
+      "POST /invoice",
+      "POST /summary"
+    ],
+    "dashboard": "/dashboard",
+    "x402Version": 2
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "tool": "check_guarantee",
+  "arguments": {
+    "service": "invoice"
+  }
+}

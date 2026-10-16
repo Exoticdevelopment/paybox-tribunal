@@ -1,0 +1,31 @@
+# Render blueprint: New → Blueprint → pick this repo. Secrets marked sync:false are asked for in the dashboard.
+services:
+  - type: web
+    name: paybox-tribunal
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /trust
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NETWORK
+        value: eip155:8453 # Base mainnet: PayBox x402 proposals use mainnet USDC
+      - key: FACILITATOR_URL
+        value: https://facilitator.payai.network # keyless, supports x402 v2 exact on eip155:8453
+      - key: PRICE
+        value: $0.01
+      - key: DEMO_FAULTS
+        # On for the hackathon demo. A fault can only make the seller lose a sale: the buyer is never charged for it.
+        value: "1"
+      - key: PAY_TO
+        sync: false
+      - key: VOUCHER_SECRET
+        generateValue: true
+      - key: ADMIN_TOKEN
+        generateValue: true
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: LLM_MODEL
+        value: claude-opus-5-5
