@@ -2,6 +2,19 @@
 
 **x402 says what it costs. Tribunal says what you're guaranteed, and enforces it before you're charged.**
 
+> **In one sentence: if the API doesn't keep its promise, the agent doesn't pay.** Everything else below is how that is proven.
+
+### Try it in 2 minutes (no wallet needed)
+
+1. **See it live:** open <https://paybox-tribunal.onrender.com>. Live trust scores, real verdicts, the full flow.
+2. **Watch it refuse bad output:** on the home page, section "Before you trust a guarantee, we try to break it". Tribunal attacks its own
+   contract (wrong totals, invented vendor, swapped lines…) and shows that every attack is caught **before** payment (raw data: `/invoice/crash-test`).
+3. **Write a guarantee:** on the home page, "Write your guarantee in plain words", press compile. Each promise comes back
+   labelled *deterministic*, *heuristic*, *probabilistic* or *not guaranteed*.
+4. **Try to break it yourself:** "Don't trust the demo. Attack it." on the home page. Submit any output you like.
+5. **With PayBox:** install the plugin, ask the agent for a price quote → charged (200). Ask again with
+   `demo_fault: "stale"` → **422, never charged**. Then `get_case` shows the signed verdict, verified inside the plugin.
+
 x402 payments are final: the agent pays, then hopes the response is good. Agents pay unattended, so
 bad responses get paid for constantly. Tribunal is a **guarantee kit for x402 sellers**: each service
 publishes a contract, and every result is checked against it **before** the payment settles.
@@ -146,7 +159,10 @@ checks balances on-chain. **8/8 checks pass** ([full report](docs/testnet-report
 
 ## Instant guarantee for any API
 
-Paste a URL, write the promise in plain language, done, with no code on the seller's side:
+**This is the answer to adoption.** A guarantee layer only matters if sellers use it, and most won't rewrite their API
+for it. They don't have to: paste a URL, write the promise in plain language, done, with no code on the seller's side.
+A seller can put a guarantee in front of an existing API in about a minute, start earning from agents that
+refuse to pay unguaranteed services, and build a public trust score from day one.
 
 ```
 POST /guard { title, url, method, promise, sample? }   → calls the API once, infers its JSON shape,
@@ -242,8 +258,17 @@ npm run dev            # open http://localhost:4021
 **AI backend (`LLM_BACKEND`)**
 - `off` (default without a key): deterministic extraction/summaries; the judge abstains, rules decide. Free.
 - `cli`: uses your local Claude Code login (`claude -p`) for free local testing. Refused when deployed.
+- `gemini`: Google Gemini (`GEMINI_API_KEY`, free tier). Used by the live deployment.
 - `api`: Anthropic API (`ANTHROPIC_API_KEY`), `claude-opus-5-5` by default with structured outputs and
   server-side refusal fallback. Set `LLM_MODEL=claude-haiku-5-5` to keep cost per call below the price.
+
+**AI reliability.** The AI is never on the payment's critical path for objective promises: schema, math,
+limits, grounding and freshness are checked by code. For the rest:
+- identical requests return the identical cached answer instantly (temperature 0, successful answers only);
+- busy or rate-limited models fall back to other models, two rounds with a pause, before giving up;
+- the demos on the public page are pre-computed when the server starts;
+- if the AI is still unavailable, the compiler uses its rule parser and the judge **abstains**, so the rules
+  decide. Nothing breaks and nobody is charged on an AI guess. `GET /ai/status` reports the live state.
 
 `DEMO_FAULTS=1` honours an `x-demo-fault` header to force each failure path on camera:
 invoice `empty | wrong_total | missing_field | hallucinated | swapped_items`,
@@ -254,7 +279,7 @@ clearly labelled simulated price for offline demos.
 ## Deploy
 
 `render.yaml` is a Render blueprint (free plan): New → Blueprint → this repo, then fill `PAY_TO`
-(and optionally `ANTHROPIC_API_KEY`). Health check: `/trust`.
+(and optionally `GEMINI_API_KEY` or `ANTHROPIC_API_KEY`). Health check: `/trust`.
 
 ## Design notes and limits
 
