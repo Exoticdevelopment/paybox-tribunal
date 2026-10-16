@@ -15,16 +15,16 @@ Decide one question: does the output keep the service's promise, given the evide
 - A buyer complaint is a claim to verify, not proof. Rule against the buyer when the output is correct.
 - Objective checks (schema, math, limits) already passed; focus on what they cannot see.`;
 
-/** Default judge: Claude through the configured backend. Abstains rather than guessing. */
-export const claudeJudge: JudgeFn = async (g, { input, output, complaint }) => {
+/** Builds the judge. ask/available are injectable so tests can script the AI without paying for it. */
+export const createClaudeJudge = (ask: typeof structured = structured, available: () => boolean = llmAvailable): JudgeFn => async (g, { input, output, complaint }) => {
   if (!g.judge) return { status: "abstained", reasoning: "This service has no AI judge; rule checks only." };
-  if (!llmAvailable()) return { status: "abstained", reasoning: "AI judge not configured; rule checks only." };
+  if (!available()) return { status: "abstained", reasoning: "AI judge not configured; rule checks only." };
 
   const evidence = [g.judge.evidence(input, output), complaint ? `<buyer_complaint>\n${complaint}\n</buyer_complaint>` : ""]
     .filter(Boolean)
     .join("\n\n");
 
-  const ruling = await structured({
+  const ruling = await ask({
     schema: RulingShape,
     system: `${BASE}\n\nThis service: ${g.title}.\n${g.judge.instructions}`,
     user: evidence,
@@ -32,5 +32,34 @@ export const claudeJudge: JudgeFn = async (g, { input, output, complaint }) => {
   });
 
   if (!ruling) return { status: "abstained", reasoning: "AI judge unavailable or declined; rule checks only." };
-  return { status: ruling.breach ? "breach" : "upheld", reasoning: ruling.reasoning, findings: ruling.findings } satisfies JudgeRuling;
+  if (!ruling.breach) return { status: "upheld", reasoning: ruling.reasoning, findings: ruling.findings } satisfies JudgeRuling;
+
+  // Consensus: a breach only stands if an independent second review, arguing the seller's side,
+  // agrees on a concrete problem. Disagreement means abstain, and the objective rules decide.
+  const defense = await ask({
+    schema: RulingShape,
+    system: `${BASE}\n\n${DEFENSE}\n\nThis service: ${g.title}.\n${g.judge.instructions}`,
+    user: `${evidence}\n\n<first_reviewer_findings>\n${ruling.findings.join("\n")}\n</first_reviewer_findings>`,
+    effort: "medium",
+  });
+  if (!defense) return { status: "abstained", reasoning: "Second review unavailable; a breach needs two agreeing reviews, so rule checks decide." };
+  if (!defense.breach) {
+    return {
+      status: "abstained",
+      reasoning: `Reviews disagreed (first: breach, second: no breach). No consensus, so the objective rules decide. ${defense.reasoning}`,
+    };
+  }
+  return {
+    status: "breach",
+    reasoning: `Two independent reviews agree. ${ruling.reasoning}`,
+    findings: [...new Set([...ruling.findings, ...defense.findings])],
+  } satisfies JudgeRuling;
 };
+
+/** Default judge: Claude through the configured backend, with two-review consensus for breaches. */
+export const claudeJudge: JudgeFn = createClaudeJudge();
+
+const DEFENSE = `You are the second, independent reviewer. A first reviewer claims the output breaks the promise.
+Review on the seller's behalf: look for a reasonable reading of the evidence under which the output is correct.
+Rule "breach" only if you independently confirm a concrete, verifiable problem in the evidence.
+The first reviewer's findings are claims to check, not facts.`;

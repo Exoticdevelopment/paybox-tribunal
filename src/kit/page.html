@@ -356,7 +356,7 @@
       <div><h4>Protocol</h4><ul><li>x402 v2, exact scheme</li><li id="f-net">Base</li><li>Settlement after validation</li></ul></div>
       <div><h4>For agents</h4><ul><li><a href="contracts">GET /contracts</a></li><li><a href="trust">GET /trust</a></li><li><a href="verdicts">GET /verdicts</a></li></ul></div>
       <div><h4>Proof</h4><ul><li><a href="certificates/key">Signing key</a></li><li>POST /certificates/verify</li><li>POST /certificates/:id/check-output</li></ul></div>
-      <div><h4>Honest limits</h4><ul><li>Enforcement is operational, not cryptographic: a seller could settle outside Tribunal.</li><li>The AI judge can be wrong; rules run first.</li></ul></div>
+      <div><h4>How we keep it honest</h4><ul><li>Every rejected payment is audited on-chain. A seller who settles it outside Tribunal is caught, flagged publicly and drops to a trust score of 0.</li><li>Objective rules decide first. The AI judge can only reject when two independent reviews agree.</li></ul></div>
     </div>
     <div class="legal">PayBox Tribunal by <a href="https://github.com/Exoticdevelopment" target="_blank" rel="noopener" style="color:var(--ink);font-weight:600">exoticdev</a></div>
   </div>
@@ -393,6 +393,7 @@
             <div><dt>Delivered</dt><dd>${s.delivered}</dd></div>
             <div><dt>Rejected, not charged</dt><dd>${s.rejectedBeforeCharge}</dd></div>
             <div><dt>Charged failures</dt><dd>${s.chargedFailures}</dd></div>
+            <div><dt>Caught settling a rejection</dt><dd style="color:${s.settledDespiteRejection ? "var(--down)" : "inherit"}">${s.settledDespiteRejection ?? 0}</dd></div>
           </dl>
           <div style="margin-top:20px"><a class="link-up" href="${esc(id)}/contract">Contract</a></div>
         </div>`).join("");
@@ -401,7 +402,7 @@
         const pay = (v) => {
           const p = v.payment;
           if (p.status === "settled") return `<a href="${explorers[p.settlement.network] ?? "#"}${esc(p.settlement.transaction)}" target="_blank" rel="noopener">Charged · view tx</a>`;
-          return { not_attempted: v.via === "voucher" ? "Free (credit)" : "Not charged", pending: "Settling…", failed: "Settlement failed" }[p.status];
+          return { not_attempted: v.via === "voucher" ? "Free (credit)" : "Not charged", pending: "Settling…", failed: "Settlement failed", settled_despite_rejection: "⚠ Seller settled a rejected payment (caught on-chain)" }[p.status];
         };
         $("feed").innerHTML = verdicts.map((v) => `
           <article>

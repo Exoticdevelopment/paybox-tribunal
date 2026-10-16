@@ -17,7 +17,7 @@ export const VALIDATOR_VERSION: string = (
   JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8")) as { version: string }
 ).version;
 
-export type SettlementStatus = "not_attempted" | "pending" | "settled" | "failed";
+export type SettlementStatus = "not_attempted" | "pending" | "settled" | "failed" | "settled_despite_rejection";
 
 export type Certificate = {
   schema: typeof CERTIFICATE_SCHEMA;

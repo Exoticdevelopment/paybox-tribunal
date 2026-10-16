@@ -10,7 +10,7 @@ import type { ProxyDef } from "../kit/proxy.ts";
 
 /** One step in a payment's life. Settlement and quality are tracked separately, never conflated. */
 export type PaymentEvent = {
-  state: "authorized" | "voucher" | "judged" | "not_charged" | "settling" | "settled" | "settle_failed" | "reconciled_settled" | "expired_unsettled";
+  state: "authorized" | "voucher" | "judged" | "not_charged" | "settling" | "settled" | "settle_failed" | "reconciled_settled" | "expired_unsettled" | "settled_despite_rejection";
   at: number;
   note: string;
 };
@@ -44,6 +44,8 @@ export type Case = {
   settlement: { transaction: string; network: string; at: number } | null;
   /** The output passed but settlement failed: kept apart from quality rejections. */
   settlementFailure: { reason: string; at: number } | null;
+  /** Set when the chain shows a REJECTED case's authorization was used anyway: the seller settled outside Tribunal. */
+  fraud?: { detectedAt: number; note: string } | null;
   appeal: Appeal | null;
 };
 

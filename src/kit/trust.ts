@@ -20,9 +20,11 @@ export function trustReport(cases: Case[]) {
   const overturned = appeals.filter((c) => c.appeal?.ruling.status === "breach").length;
   // A delivery only counts as good if it was not later overturned on appeal.
   const good = delivered.length - overturned;
+  // A seller caught settling a rejected payment loses all trust: that is the one thing Tribunal exists to prevent.
+  const fraud = cases.filter((c) => c.fraud).length;
 
   return {
-    score: Math.round(wilsonLowerBound(good, total) * 100),
+    score: fraud ? 0 : Math.round(wilsonLowerBound(good, total) * 100),
     attempts: total,
     delivered: delivered.length,
     rejectedBeforeCharge: total - delivered.length,
@@ -30,7 +32,9 @@ export function trustReport(cases: Case[]) {
     appeals: appeals.length,
     appealsUpheldForBuyer: overturned,
     /** Paid results later found faulty. The number buyers care about most. */
-    chargedFailures: overturned,
+    chargedFailures: overturned + fraud,
+    /** Rejected results the seller settled anyway, proven on-chain. */
+    settledDespiteRejection: fraud,
     lastVerdictAt: cases.reduce((max, c) => Math.max(max, c.verdict.decidedAt), 0) || null,
   };
 }

@@ -68,7 +68,8 @@
     settled: ["ok", "Settled on-chain"],
     settle_failed: ["bad", "Settlement failed at the facilitator"],
     reconciled_settled: ["ok", "Reconciled: settled on-chain"],
-    expired_unsettled: ["ok", "Reconciled: expired unused, never charged"],
+    expired_unsettled: ["ok", "Audited on-chain: expired unused, never charged"],
+    settled_despite_rejection: ["bad", "Caught: the seller settled this rejected payment outside Tribunal"],
   };
 
   async function load() {
@@ -128,7 +129,7 @@
         <section class="col">
           <div class="step">03</div><h2>Payment</h2>
           <p class="sub">Tracked separately from the verdict.</p>
-          <div class="big">${charged ? "Charged" : p.status === "pending" ? "Settling" : p.status === "failed" ? "Settlement failed" : "Not charged"}</div>
+          <div class="big"${p.status === "settled_despite_rejection" ? ' style="color:var(--down)"' : ""}>${p.status === "settled_despite_rejection" ? "Seller caught settling a rejection" : charged ? "Charged" : p.status === "pending" ? "Settling" : p.status === "failed" ? "Settlement failed" : "Not charged"}</div>
           ${tx}
           <ul class="items" style="margin-top:12px">${timeline || "<li>No payment events recorded.</li>"}</ul>
           ${cert.payment.nonce ? `<div class="kv">Authorization nonce<br><b>${esc(cert.payment.nonce)}</b></div>` : ""}

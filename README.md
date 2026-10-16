@@ -253,9 +253,14 @@ clearly labelled simulated price for offline demos.
 
 ## Design notes and limits
 
-- **Seller-side enforcement.** Not settling is enforced by this server's code, not a contract. A dishonest
-  seller could still settle within the authorization window (300s). The public verdict log and trust
-  score make that visible; anchoring verdicts on-chain and an escrow mode are on the roadmap.
+- **Seller-side enforcement, audited on-chain.** Not settling is enforced by this server's code, not a contract,
+  so a dishonest seller could still submit a rejected buyer's authorization within its window (300s). Tribunal
+  catches it: every rejected x402 case is audited against USDC's `authorizationState` (on view, every 5 minutes,
+  or `POST /audit`). A used nonce flags the case `settled_despite_rejection` publicly, counts as a charged failure
+  and drops the service's trust score to 0. Escrow-backed refunds remain on the roadmap.
+- **Consensus judge.** The AI judge can only reject when two independent reviews agree: a second reviewer argues
+  the seller's side and must independently confirm a concrete problem. Disagreement means abstain, and the objective
+  rules decide. Upheld results cost one review; only breaches cost two.
 - **Rules before AI.** Rules are deterministic and can't be argued with. The judge only rejects on a
   concrete finding, treats all inputs as evidence (not instructions), and abstains on failure.
 - **Credits are bearer tokens** (HMAC-signed, single-use, 7-day expiry, scoped to one service), never

@@ -65,6 +65,7 @@ export function paywallRoutes(guarantees: AnyGuarantee[]) {
 
 /** Payment state, kept separate from the quality decision. */
 export function settlementStatus(c: Case): SettlementStatus {
+  if (c.fraud) return "settled_despite_rejection";
   if (c.verdict.decision === "rejected" || c.via === "voucher") return "not_attempted";
   if (c.settlement) return "settled";
   if (c.events?.some((e) => e.state === "expired_unsettled")) return "not_attempted";
@@ -673,6 +674,55 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
     return { changed: true, note: events.at(-1)!.note };
   };
 
+  // ---------- Fraud detector: a rejected payment must never move on-chain ----------
+  // Tribunal can't stop a dishonest seller from submitting the buyer's signed authorization
+  // outside Tribunal. It can catch it: for every rejected x402 case, read authorizationState.
+  // If the nonce was used, the case is publicly flagged and the service's trust score drops to 0.
+
+  const audit = async (record: Case): Promise<"fraud" | "cleared" | "pending" | "skipped"> => {
+    if (record.verdict.decision !== "rejected" || record.via !== "x402" || record.fraud) return "skipped";
+    if (record.events?.some((e) => e.state === "expired_unsettled")) return "skipped"; // already proven never charged
+    const p = record.payment;
+    if (!p?.network || !p.asset || !p.payer || !p.nonce) return "skipped";
+    const used = await chain.authorizationUsed({ network: p.network, asset: p.asset, payer: p.payer, nonce: p.nonce });
+    const events = (record.events ??= []);
+    if (used) {
+      record.fraud = { detectedAt: Date.now(), note: "The buyer's authorization for this REJECTED result was used on-chain: the seller settled outside Tribunal." };
+      events.push({ state: "settled_despite_rejection", at: Date.now(), note: record.fraud.note });
+      db.saveCase(record);
+      return "fraud";
+    }
+    if (p.validBefore && Date.now() / 1000 > p.validBefore) {
+      events.push({ state: "expired_unsettled", at: Date.now(), note: "Audited on-chain: the authorization expired unused. This buyer can never be charged for it." });
+      db.saveCase(record);
+      return "cleared";
+    }
+    return "pending";
+  };
+
+  let auditing = false;
+  const auditAll = async () => {
+    if (auditing) return { skipped: true };
+    auditing = true;
+    const tally = { fraud: 0, cleared: 0, pending: 0, checked: 0 };
+    try {
+      for (const record of db.allCases()) {
+        const r = await audit(record).catch(() => "skipped" as const);
+        if (r === "skipped") continue;
+        tally.checked++;
+        tally[r]++;
+      }
+    } finally {
+      auditing = false;
+    }
+    return tally;
+  };
+
+  // Every 5 minutes, without keeping the process alive on its own.
+  setInterval(() => void auditAll(), 5 * 60_000).unref();
+
+  app.post("/audit", async (c) => c.json(await auditAll()));
+
   app.post("/cases/:id/reconcile", async (c) => {
     const record = db.getCase(c.req.param("id"));
     if (!record) return c.json({ error: "not_found" }, 404);
@@ -689,6 +739,9 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
     const status = settlementStatus(record);
     if ((status === "pending" || status === "failed") && Date.now() - record.createdAt > RECONCILE_AFTER_MS) {
       await reconcile(record).catch(() => undefined);
+    }
+    if (record.verdict.decision === "rejected" && Date.now() - record.createdAt > RECONCILE_AFTER_MS) {
+      await audit(record).catch(() => undefined);
     }
   };
 
