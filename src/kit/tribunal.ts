@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { Hono, type Context, type MiddlewareHandler } from "hono";
 import { z } from "zod";
 import { config } from "../config.ts";
-import { llmAvailable } from "../llm.ts";
+import { llmAvailable, llmHealthCheck } from "../llm.ts";
 import { NO_PAYMENT, readPayment, type PaymentInfo } from "../payment.ts";
 import type { Case, Db, PaymentEvent, Voucher } from "../store/db.ts";
 import { viemChainReader, type ChainReader } from "./chain.ts";
@@ -776,6 +776,9 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
     const hash = sha256(body.data.output ?? null);
     return c.json({ matches: hash === record.certificate.evaluated_output_hash, hash, evaluated: record.certificate.evaluated_output_hash });
   });
+
+  // Whether the AI judge and compiler can actually reach their model right now.
+  app.get("/ai/status", async (c) => c.json(await llmHealthCheck()));
 
   app.get("/trust", (c) => {
     const cases = db.allCases();

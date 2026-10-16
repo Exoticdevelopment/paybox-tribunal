@@ -25,6 +25,27 @@ export function llmAvailable(): boolean {
  * - off: returns null; callers fall back to deterministic behaviour.
  * Returns null on refusal, timeout or unparseable output, never throws.
  */
+/** Last AI failure, kept for the /ai/status health check (message only, never credentials). */
+let lastError: { at: string; message: string } | null = null;
+
+export function llmStatus() {
+  const model = config.llmBackend === "gemini" ? config.geminiModel : config.llmBackend === "api" ? config.llmModel : null;
+  return { backend: config.llmBackend, model, lastError };
+}
+
+/** Sends a tiny structured request and reports whether the configured AI answers correctly. */
+export async function llmHealthCheck() {
+  if (!llmAvailable()) return { ...llmStatus(), ok: false, detail: "No AI backend configured." };
+  const started = Date.now();
+  const answer = await structured({
+    schema: z.object({ ok: z.boolean() }),
+    system: "You are a health check. Answer exactly as instructed.",
+    user: 'Reply with {"ok": true}.',
+    effort: "low",
+  });
+  return { ...llmStatus(), ok: answer?.ok === true, ms: Date.now() - started };
+}
+
 export async function structured<T>(req: StructuredRequest<T>): Promise<T | null> {
   try {
     if (config.llmBackend === "api") return await viaApi(req);
@@ -32,7 +53,9 @@ export async function structured<T>(req: StructuredRequest<T>): Promise<T | null
     if (config.llmBackend === "cli") return await viaCli(req);
     return null;
   } catch (error) {
-    console.error(`llm (${config.llmBackend}) failed:`, error instanceof Error ? error.message : error);
+    const message = error instanceof Error ? error.message : String(error);
+    lastError = { at: new Date().toISOString(), message: message.slice(0, 500) };
+    console.error(`llm (${config.llmBackend}) failed:`, message);
     return null;
   }
 }
