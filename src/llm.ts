@@ -80,8 +80,25 @@ async function viaApi<T>(req: StructuredRequest<T>): Promise<T | null> {
  * validated against the same zod schema as every other backend, so a malformed answer is
  * treated exactly like no answer.
  */
+// Free-tier models get overloaded (503) or rate-limited (429); try the next one instead of giving up.
+const GEMINI_FALLBACKS = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-flash-lite-latest"];
+
 async function viaGemini<T>(req: StructuredRequest<T>): Promise<T | null> {
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${config.geminiModel}:generateContent`, {
+  const models = [...new Set([config.geminiModel, ...GEMINI_FALLBACKS])];
+  let lastFailure: unknown;
+  for (const model of models) {
+    try {
+      return await geminiCall(model, req);
+    } catch (error) {
+      lastFailure = error;
+      if (!/answered (429|500|503|404)/.test(String(error))) throw error;
+    }
+  }
+  throw lastFailure;
+}
+
+async function geminiCall<T>(model: string, req: StructuredRequest<T>): Promise<T | null> {
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
     method: "POST",
     headers: { "content-type": "application/json", "x-goog-api-key": config.geminiKey ?? "" },
     signal: AbortSignal.timeout(45_000),
@@ -100,7 +117,7 @@ async function viaGemini<T>(req: StructuredRequest<T>): Promise<T | null> {
       generationConfig: { responseMimeType: "application/json", temperature: 0 },
     }),
   });
-  if (!res.ok) throw new Error(`Gemini answered ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  if (!res.ok) throw new Error(`Gemini (${model}) answered ${res.status}: ${(await res.text()).slice(0, 200)}`);
   const body = (await res.json()) as { candidates?: { content?: { parts?: { text?: string }[] }; finishReason?: string }[] };
   const text = body.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
   const json = extractJson(text);
