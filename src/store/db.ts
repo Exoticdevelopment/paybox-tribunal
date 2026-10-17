@@ -104,10 +104,17 @@ export class Db {
   private data: Data;
   private readonly file: string;
 
-  constructor(file: string) {
+  /**
+   * @param evidenceFile Real cases committed to the repo (inputs and outputs redacted). They are restored on
+   * every boot, so the public record survives redeploys on hosts with an ephemeral disk.
+   */
+  constructor(file: string, evidenceFile?: string) {
     this.file = file;
     const loaded: Partial<Data> = file !== ":memory:" && existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : {};
     this.data = { cases: {}, vouchers: {}, drafts: {}, promiseSets: {}, challenges: {}, proxies: {}, ...loaded };
+    if (evidenceFile && existsSync(evidenceFile)) {
+      for (const c of JSON.parse(readFileSync(evidenceFile, "utf8")) as Case[]) this.data.cases[c.id] ??= c;
+    }
   }
 
   private flush() {

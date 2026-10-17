@@ -49,6 +49,8 @@ export const config = {
   /** Required to publish seller promises when deployed. Locally, publishing is open if unset. */
   adminToken: process.env.ADMIN_TOKEN || undefined,
   dataFile: process.env.DATA_FILE ?? "data/db.json",
+  /** Committed real cases restored on boot (see GET /evidence/export). */
+  evidenceFile: process.env.EVIDENCE_FILE ?? "evidence/cases.json",
   /** How long after delivery a paid result can be appealed. */
   appealWindowMs: 24 * 60 * 60 * 1000,
   isHosted,

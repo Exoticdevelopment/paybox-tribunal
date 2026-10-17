@@ -648,6 +648,18 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
     return c.json(cases.map(publicCase));
   });
 
+  // Real paid cases, with the buyer's input and the delivered output redacted (their hashes stay in the
+  // signed certificate). Committed to evidence/cases.json so the public record survives redeploys.
+  app.get("/evidence/export", (c) =>
+    c.json(
+      db
+        .allCases()
+        .filter((x) => x.via === "x402")
+        .sort((a, b) => a.createdAt - b.createdAt)
+        .map((x) => ({ ...x, input: "[redacted]", output: "[redacted]", response: x.response ? { status: x.response.status, body: "[redacted]" } : undefined, idempotencyKey: null })),
+    ),
+  );
+
   app.get("/verdicts/:id", async (c) => {
     const record = db.getCase(c.req.param("id"));
     if (!record) return c.json({ error: "not_found" }, 404);

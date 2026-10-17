@@ -11,7 +11,7 @@ import { services } from "./services/index.ts";
 import { Db } from "./store/db.ts";
 import { paymentKey } from "./payment.ts";
 
-const db = new Db(config.dataFile);
+const db = new Db(config.dataFile, config.evidenceFile);
 
 const resourceServer = new x402ResourceServer(new HTTPFacilitatorClient({ url: config.facilitatorUrl }))
   .register(config.network, new ExactEvmScheme())
