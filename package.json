@@ -17,6 +17,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.134.0",
     "@hono/node-server": "^2.1.5",
+    "@solana/kit": "5.5.1",
     "@x402/core": "^2.28.0",
     "@x402/evm": "^2.28.0",
     "@x402/hono": "^2.28.0",
@@ -31,5 +32,8 @@
   },
   "engines": {
     "node": ">=22.18"
+  },
+  "overrides": {
+    "typescript": "$typescript"
   }
 }
