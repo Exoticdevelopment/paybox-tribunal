@@ -89,21 +89,36 @@ async function startEvidenceBackup() {
   const store = gitHubEvidence(config.evidenceGitHub!);
   try {
     const restored = db.addEvidence(await store.load());
-    console.log(`  evidence: restored ${restored} case(s) from GitHub`);
+    const restoredRecord = db.addRecord(await store.loadRecord());
+    console.log(`  evidence: restored ${restored} case(s) and ${restoredRecord} record item(s) from GitHub`);
   } catch (error) {
     console.error("evidence restore failed:", error instanceof Error ? error.message : error);
   }
   let lastHash = "";
+  let lastRecordHash = "";
   const backup = async () => {
     const cases = evidenceCases(db);
     const hash = createHash("sha256").update(JSON.stringify(cases)).digest("hex");
-    if (!cases.length || hash === lastHash) return;
-    try {
-      const total = await store.save(cases);
-      lastHash = hash;
-      console.log(`  evidence: backed up ${total} case(s)`);
-    } catch (error) {
-      console.error("evidence backup failed:", error instanceof Error ? error.message : error);
+    if (cases.length && hash !== lastHash) {
+      try {
+        const total = await store.save(cases);
+        lastHash = hash;
+        console.log(`  evidence: backed up ${total} case(s)`);
+      } catch (error) {
+        console.error("evidence backup failed:", error instanceof Error ? error.message : error);
+      }
+    }
+    const record = db.publicRecord();
+    const recordHash = createHash("sha256").update(JSON.stringify(record)).digest("hex");
+    const empty = !record.challenges.length && !record.proxies.length && !Object.keys(record.promiseSets).length;
+    if (!empty && recordHash !== lastRecordHash) {
+      try {
+        const merged = await store.saveRecord(record);
+        lastRecordHash = recordHash;
+        console.log(`  evidence: backed up ${merged.challenges.length} challenge(s), ${merged.proxies.length} guaranteed API(s)`);
+      } catch (error) {
+        console.error("record backup failed:", error instanceof Error ? error.message : error);
+      }
     }
   };
   setInterval(backup, 60_000).unref();

@@ -87,6 +87,8 @@ export type Challenge = {
   summary: string;
 };
 
+export type PublicRecord = { challenges: Challenge[]; proxies: ProxyDef[]; promiseSets: Record<string, PromiseSet[]> };
+
 type Data = {
   proxies: Record<string, ProxyDef>;
   cases: Record<string, Case>;
@@ -203,6 +205,42 @@ export class Db {
 
   activeProxies(): ProxyDef[] {
     return Object.values(this.data.proxies).filter((p) => p.active);
+  }
+
+  /** Everything public besides cases: challenges, guaranteed APIs (active only) and published promise sets. */
+  publicRecord(): PublicRecord {
+    return {
+      challenges: Object.values(this.data.challenges).flat(),
+      proxies: Object.values(this.data.proxies).filter((p) => p.active),
+      promiseSets: this.data.promiseSets,
+    };
+  }
+
+  /** Restores a backed-up public record without overwriting anything already known here. */
+  addRecord(record: Partial<PublicRecord>): number {
+    let added = 0;
+    for (const ch of record.challenges ?? []) {
+      const list = (this.data.challenges[ch.service] ??= []);
+      if (list.some((x) => x.id === ch.id)) continue;
+      list.push(ch);
+      added++;
+    }
+    for (const p of record.proxies ?? []) {
+      if (this.data.proxies[p.id]) continue;
+      this.data.proxies[p.id] = p;
+      added++;
+    }
+    for (const [service, sets] of Object.entries(record.promiseSets ?? {})) {
+      const list = (this.data.promiseSets[service] ??= []);
+      for (const s of sets) {
+        if (list.some((x) => x.version === s.version)) continue;
+        list.push(s);
+        added++;
+      }
+      list.sort((a, b) => a.publishedAt - b.publishedAt);
+    }
+    if (added) this.flush();
+    return added;
   }
 
   vouchersFor(payer: string): Voucher[] {

@@ -57,3 +57,22 @@ test("GitHub backup merges with what is already stored and never drops a case", 
     globalThis.fetch = realFetch;
   }
 });
+
+test("challenges, guaranteed APIs and published contracts are restored and merged without loss", async () => {
+  const { mergeRecords } = await import("../src/kit/evidence.ts");
+  const ch = (id: string, at: number) => ({ id, service: "quote", at }) as never;
+  const set = (version: string, publishedAt: number) => ({ version, publishedAt }) as never;
+  const merged = mergeRecords(
+    { challenges: [ch("a", 1)], promiseSets: { "g-x": [set("1.1.0", 1)] } },
+    { challenges: [ch("b", 2), ch("a", 1)], proxies: [{ id: "g-x", active: true } as never], promiseSets: { "g-x": [set("1.1.0", 1), set("1.2.0", 2)] } },
+  );
+  assert.deepEqual(merged.challenges.map((c) => c.id), ["a", "b"]);
+  assert.equal(merged.proxies.length, 1);
+  assert.deepEqual(merged.promiseSets["g-x"].map((s) => s.version), ["1.1.0", "1.2.0"]);
+
+  const db = new Db(":memory:");
+  assert.equal(db.addRecord(merged), 5);
+  assert.equal(db.addRecord(merged), 0, "restoring twice adds nothing");
+  assert.equal(db.challengesFor("quote").length, 2);
+  assert.equal(db.getProxy("g-x")?.active, true);
+});
