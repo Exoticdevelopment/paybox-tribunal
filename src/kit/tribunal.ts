@@ -681,7 +681,7 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
     const p = record.payment;
     if (!p?.network || !p.asset || !p.payer || !p.nonce) return { changed: false, note: "Missing payment details; cannot reconcile." };
 
-    const used = await chain.authorizationUsed({ network: p.network, asset: p.asset, payer: p.payer, nonce: p.nonce });
+    const used = await chain.authorizationUsed({ network: p.network, asset: p.asset, payer: p.payer, nonce: p.nonce, since: record.createdAt });
     const events = (record.events ??= []);
     if (used) {
       record.settlement = { transaction: "unknown (found via authorizationState)", network: p.network, at: Date.now() };
@@ -705,16 +705,16 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
     if (record.events?.some((e) => e.state === "expired_unsettled")) return "skipped"; // already proven never charged
     const p = record.payment;
     if (!p?.network || !p.asset || !p.payer || !p.nonce) return "skipped";
-    const used = await chain.authorizationUsed({ network: p.network, asset: p.asset, payer: p.payer, nonce: p.nonce });
+    const used = await chain.authorizationUsed({ network: p.network, asset: p.asset, payer: p.payer, nonce: p.nonce, since: record.createdAt });
     const events = (record.events ??= []);
     if (used) {
-      record.fraud = { detectedAt: Date.now(), note: "The buyer's authorization for this REJECTED result was used on-chain: the seller settled outside Tribunal." };
+      record.fraud = { detectedAt: Date.now(), note: "The buyer's signed payment for this REJECTED result was used on-chain: the seller settled outside Tribunal." };
       events.push({ state: "settled_despite_rejection", at: Date.now(), note: record.fraud.note });
       db.saveCase(record);
       return "fraud";
     }
     if (p.validBefore && Date.now() / 1000 > p.validBefore) {
-      events.push({ state: "expired_unsettled", at: Date.now(), note: "Audited on-chain: the authorization expired unused. This buyer can never be charged for it." });
+      events.push({ state: "expired_unsettled", at: Date.now(), note: "Audited on-chain: the signed payment expired unused. This buyer can never be charged for it." });
       db.saveCase(record);
       return "cleared";
     }

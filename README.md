@@ -162,8 +162,9 @@ PayBox's own x402 gateway (`use_service`), approved in the PayBox signing window
 USDC on **Base** is the primary rail. Set `PAY_TO_SOLANA` and every paid route also offers **USDC on Solana**
 (`solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp`, exact SVM scheme, fees sponsored by the PayAI facilitator), the two
 rails PayBox supports for x402. The plugin's paid tools take `pay_on: "base" | "solana"`. Pay-on-validation works
-the same on both: a 422 is never settled. Limit: the on-chain fraud audit reads EIP-3009 `authorizationState`, so
-it covers Base; Solana cases rely on the payment key for replay protection and on the settlement record.
+the same on both: a 422 is never settled. The on-chain fraud audit covers both: on Base it reads EIP-3009
+`authorizationState`; on Solana it looks for the buyer's own payment signature among the buyer's transactions (a
+settled payment always carries it, and an unsettled one can never land after its blockhash expires).
 
 ## Payment safety
 
@@ -302,7 +303,8 @@ clearly labelled simulated price for offline demos.
 
 - **Seller-side enforcement, audited on-chain.** Not settling is enforced by this server's code, not a contract,
   so a dishonest seller could still submit a rejected buyer's authorization within its window (300s). Tribunal
-  catches it: every rejected x402 case is audited against USDC's `authorizationState` (on view, every 5 minutes,
+  catches it: every rejected x402 case is audited on-chain (USDC's `authorizationState` on Base, the buyer's payment
+  signature on Solana) (on view, every 5 minutes,
   or `POST /audit`). A used nonce flags the case `settled_despite_rejection` publicly, counts as a charged failure
   and drops the service's trust score to 0. Escrow-backed refunds remain on the roadmap.
 - **Consensus judge.** The AI judge can only reject when two independent reviews agree: a second reviewer argues
