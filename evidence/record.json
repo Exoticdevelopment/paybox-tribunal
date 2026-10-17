@@ -1,0 +1,31 @@
+{
+  "challenges": [
+    {
+      "id": "566d5aeb-af04-4b4e-af8c-6dc6c88ae9e4",
+      "service": "invoice",
+      "at": 1792242191697,
+      "contractVersion": "1.0.0",
+      "note": "e2e: honest sample",
+      "caught": false,
+      "rulesHit": [],
+      "judge": "upheld",
+      "summary": "Passed every contract check and the AI judge confirmed the output."
+    },
+    {
+      "id": "1bba491d-1b10-4280-bcc9-f33344303684",
+      "service": "invoice",
+      "at": 1792242192104,
+      "contractVersion": "1.0.0",
+      "note": "e2e: inflated total",
+      "caught": true,
+      "rulesHit": [
+        "total",
+        "grounding"
+      ],
+      "judge": "skipped",
+      "summary": "Failed 2 contract check(s): total, grounding."
+    }
+  ],
+  "proxies": [],
+  "promiseSets": {}
+}
