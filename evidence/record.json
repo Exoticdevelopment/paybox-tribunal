@@ -225,6 +225,19 @@
       ],
       "judge": "skipped",
       "summary": "Failed 1 contract check(s): price."
+    },
+    {
+      "id": "935903bb-6564-486e-9281-f08d6706df6a",
+      "service": "invoice",
+      "at": 1792244709185,
+      "contractVersion": "1.0.0",
+      "note": "Invent the vendor",
+      "caught": true,
+      "rulesHit": [
+        "grounding"
+      ],
+      "judge": "skipped",
+      "summary": "Failed 1 contract check(s): grounding."
     }
   ],
   "proxies": [
