@@ -23,6 +23,8 @@ services:
         sync: false
       - key: PAY_TO_SOLANA # optional second rail: USDC on Solana (public address)
         sync: false
+      - key: GITHUB_TOKEN # optional: backs up real cases to the evidence branch (Contents read/write, this repo only)
+        sync: false
       - key: VOUCHER_SECRET
         generateValue: true
       - key: ADMIN_TOKEN

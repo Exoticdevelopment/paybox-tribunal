@@ -10,6 +10,8 @@ import { acceptsFor, paywallRoutes } from "./kit/tribunal.ts";
 import { services } from "./services/index.ts";
 import { Db } from "./store/db.ts";
 import { paymentKey } from "./payment.ts";
+import { evidenceCases, gitHubEvidence } from "./kit/evidence.ts";
+import { createHash } from "node:crypto";
 
 const db = new Db(config.dataFile, config.evidenceFile);
 
@@ -76,7 +78,36 @@ serve({ fetch: fetchBehindProxy, port: config.port }, (info) => {
   console.log(`  services: ${services.map((s) => `${s.id} (${s.price})`).join(", ")}`);
   console.log(`  AI: ${config.llmBackend}${config.llmBackend === "api" ? ` (${config.llmModel})` : ""}`);
   if (config.llmBackend !== "off") void warmUp(info.port);
+  if (config.evidenceGitHub) void startEvidenceBackup();
 });
+
+/**
+ * Real cases survive restarts: restore them from GitHub on boot, then back up any change once a minute.
+ * Inputs and outputs are redacted; certificates still verify.
+ */
+async function startEvidenceBackup() {
+  const store = gitHubEvidence(config.evidenceGitHub!);
+  try {
+    const restored = db.addEvidence(await store.load());
+    console.log(`  evidence: restored ${restored} case(s) from GitHub`);
+  } catch (error) {
+    console.error("evidence restore failed:", error instanceof Error ? error.message : error);
+  }
+  let lastHash = "";
+  const backup = async () => {
+    const cases = evidenceCases(db);
+    const hash = createHash("sha256").update(JSON.stringify(cases)).digest("hex");
+    if (!cases.length || hash === lastHash) return;
+    try {
+      const total = await store.save(cases);
+      lastHash = hash;
+      console.log(`  evidence: backed up ${total} case(s)`);
+    } catch (error) {
+      console.error("evidence backup failed:", error instanceof Error ? error.message : error);
+    }
+  };
+  setInterval(backup, 60_000).unref();
+}
 
 /** Pre-computes the AI answers for the demos on the public page, so judges get them instantly. */
 async function warmUp(port: number) {

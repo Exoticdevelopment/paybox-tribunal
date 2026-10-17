@@ -16,6 +16,7 @@ import {
   type SettlementStatus,
 } from "./certificate.ts";
 import { compilePromises } from "./compiler.ts";
+import { evidenceCases } from "./evidence.ts";
 import { runCrashTest, type CrashReport } from "./crashtest.ts";
 import { callUpstream, inferSchema, proxyGuarantee, proxyInputSchema, slugify, ProxyInput, type ProxyDef } from "./proxy.ts";
 import { caseHtml, contractsHtml, dashboardHtml, keyHtml } from "./dashboard.ts";
@@ -650,15 +651,7 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
 
   // Real paid cases, with the buyer's input and the delivered output redacted (their hashes stay in the
   // signed certificate). Committed to evidence/cases.json so the public record survives redeploys.
-  app.get("/evidence/export", (c) =>
-    c.json(
-      db
-        .allCases()
-        .filter((x) => x.via === "x402")
-        .sort((a, b) => a.createdAt - b.createdAt)
-        .map((x) => ({ ...x, input: "[redacted]", output: "[redacted]", response: x.response ? { status: x.response.status, body: "[redacted]" } : undefined, idempotencyKey: null })),
-    ),
-  );
+  app.get("/evidence/export", (c) => c.json(evidenceCases(db)));
 
   app.get("/verdicts/:id", async (c) => {
     const record = db.getCase(c.req.param("id"));

@@ -312,7 +312,9 @@ clearly labelled simulated price for offline demos.
   concrete finding, treats all inputs as evidence (not instructions), and abstains on failure.
 - **Credits are bearer tokens** (HMAC-signed, single-use, 7-day expiry, scoped to one service), never
   balances keyed by wallet address, because addresses are public.
-- **Storage** is a JSON file for the demo; verdicts never expose the buyer's input publicly.
+- **Storage** is a JSON file for the demo; verdicts never expose the buyer's input publicly. Real paid cases are
+  backed up every minute to the `evidence` branch (inputs and outputs redacted, certificates still verify) and
+  restored on boot, so the public record survives restarts on a free host with an ephemeral disk.
 
 ## Roadmap
 

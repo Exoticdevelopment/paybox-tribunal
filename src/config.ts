@@ -51,6 +51,18 @@ export const config = {
   dataFile: process.env.DATA_FILE ?? "data/db.json",
   /** Committed real cases restored on boot (see GET /evidence/export). */
   evidenceFile: process.env.EVIDENCE_FILE ?? "evidence/cases.json",
+  /**
+   * Optional automatic backup of real cases to GitHub (a fine-grained token with Contents read/write on
+   * this one repository). Stored on its own branch, so a backup never redeploys the service.
+   */
+  evidenceGitHub: process.env.GITHUB_TOKEN
+    ? {
+        token: process.env.GITHUB_TOKEN,
+        repo: process.env.GITHUB_REPO || "Exoticdevelopment/paybox-tribunal",
+        branch: process.env.EVIDENCE_BRANCH || "evidence",
+        path: "evidence/cases.json",
+      }
+    : undefined,
   /** How long after delivery a paid result can be appealed. */
   appealWindowMs: 24 * 60 * 60 * 1000,
   isHosted,

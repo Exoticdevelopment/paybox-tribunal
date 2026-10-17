@@ -112,9 +112,19 @@ export class Db {
     this.file = file;
     const loaded: Partial<Data> = file !== ":memory:" && existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : {};
     this.data = { cases: {}, vouchers: {}, drafts: {}, promiseSets: {}, challenges: {}, proxies: {}, ...loaded };
-    if (evidenceFile && existsSync(evidenceFile)) {
-      for (const c of JSON.parse(readFileSync(evidenceFile, "utf8")) as Case[]) this.data.cases[c.id] ??= c;
+    if (evidenceFile && existsSync(evidenceFile)) this.addEvidence(JSON.parse(readFileSync(evidenceFile, "utf8")) as Case[]);
+  }
+
+  /** Restores backed-up cases; a case already known here (the live version) is never overwritten. */
+  addEvidence(cases: Case[]): number {
+    let added = 0;
+    for (const c of cases) {
+      if (this.data.cases[c.id]) continue;
+      this.data.cases[c.id] = c;
+      added++;
     }
+    if (added) this.flush();
+    return added;
   }
 
   private flush() {

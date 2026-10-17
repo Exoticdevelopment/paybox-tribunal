@@ -26,3 +26,34 @@ test("a missing evidence file is fine", () => {
   const db = new Db(":memory:", join(tmpdir(), "does-not-exist.json"));
   assert.equal(db.allCases().length, 0);
 });
+
+test("GitHub backup merges with what is already stored and never drops a case", async () => {
+  const { gitHubEvidence } = await import("../src/kit/evidence.ts");
+  let stored: { sha: string; content: string } | null = {
+    sha: "s1",
+    content: Buffer.from(JSON.stringify([{ id: "old", createdAt: 1 }])).toString("base64"),
+  };
+  const calls: string[] = [];
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = (async (url: string, init?: RequestInit) => {
+    calls.push(`${init?.method ?? "GET"} ${url}`);
+    if (url.includes("/git/ref/heads/evidence")) return new Response("{}", { status: 200 });
+    if (init?.method === "PUT") {
+      const body = JSON.parse(String(init.body));
+      assert.equal(body.sha, "s1");
+      assert.equal(body.branch, "evidence");
+      stored = { sha: "s2", content: body.content };
+      return new Response("{}", { status: 200 });
+    }
+    if (url.includes("/contents/")) return stored ? Response.json(stored) : new Response("", { status: 404 });
+    throw new Error(`unexpected ${url}`);
+  }) as typeof fetch;
+  try {
+    const store = gitHubEvidence({ token: "t", repo: "o/r", branch: "evidence", path: "evidence/cases.json" });
+    const total = await store.save([{ id: "new", createdAt: 2 } as unknown as Case]);
+    assert.equal(total, 2);
+    assert.deepEqual((await store.load()).map((c) => c.id), ["old", "new"]);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
