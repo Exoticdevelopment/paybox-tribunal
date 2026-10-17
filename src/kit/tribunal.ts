@@ -228,6 +228,8 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
   });
   app.get("/:service/contract", (c) => {
     const g = lookup(c.req.param("service"));
+    // People get a readable page; agents (and ?format=json) get the machine-readable contract.
+    if (g && c.req.header("accept")?.includes("text/html") && c.req.query("format") !== "json") return c.html(contractsHtml());
     return g ? c.json(contractOf(g)) : c.json({ error: "unknown_service" }, 404);
   });
 

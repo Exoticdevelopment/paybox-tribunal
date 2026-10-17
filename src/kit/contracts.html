@@ -42,37 +42,118 @@
   .sub { color: var(--muted); font-size: 14px; margin: 20px 0 8px; font-weight: 600; }
   .hash { font: 12px var(--mono); color: var(--muted); overflow-wrap: anywhere; margin-top: 16px; }
   .links { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; font-weight: 600; font-size: 14px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 8px; }
+  .box { background: var(--soft); border-radius: 16px; padding: 20px; }
+  .box h3 { color: var(--ink); font-size: 15px; font-weight: 600; margin: 0 0 10px; }
+  .field { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--hairline); font-size: 14px; }
+  .box h3 + .field { border-top: 0; }
+  .field b { color: var(--ink); font: 500 13px var(--mono); }
+  .field span { color: var(--muted); text-align: right; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 8px; }
+  .stat { background: var(--soft); border-radius: 16px; padding: 16px; }
+  .stat .n { font: 400 30px/1.1 var(--font); color: var(--ink); letter-spacing: -.5px; }
+  .stat .l { font-size: 13px; color: var(--muted); }
+  .stat.good .n { color: #048a52; }
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 8px 0 24px; }
+  .flow div { background: var(--soft); border-radius: 16px; padding: 16px; font-size: 14px; }
+  .flow b { display: block; color: var(--ink); margin-bottom: 4px; }
+  .flow .bad { background: #fdecec; }
+  .flow .ok { background: #e3f6ee; }
+  @media (max-width: 760px) { .grid2, .flow { grid-template-columns: 1fr; } .stats { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 640px) { header h1 { font-size: 36px; } .card { padding: 24px; } }
 </style>
 </head>
 <body>
 <nav><div class="wrap"><a class="brand" href="/"><img src="/logo.svg" width="28" height="28" alt="">PayBox Tribunal</a><a href="/#live">All verdicts →</a></div></nav>
 <header><div class="wrap">
-  <h1>The contracts</h1>
-  <p>What every service promises, published before you pay and pinned by hash. If a result breaks any of these, the response is 422 and your payment is never settled.</p>
+  <h1 id="h1">The contracts</h1>
+  <p id="lead">What every service promises, published before you pay and pinned by hash. If a result breaks any of these, the response is 422 and your payment is never settled.</p>
 </div></header>
 <main><div class="wrap" id="list"><div class="card">Loading contracts…</div></div></main>
 <script>
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-  const networks = { "eip155:8453": "Base mainnet", "eip155:84532": "Base Sepolia (testnet)" };
-  fetch("/contracts", { headers: { accept: "application/json" } }).then((r) => r.json()).then((contracts) => {
-    document.getElementById("list").innerHTML = contracts.map((c) => `
-      <section class="card">
+  const networks = {
+    "eip155:8453": "Base", "eip155:84532": "Base Sepolia (testnet)",
+    "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "Solana", "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": "Solana devnet",
+  };
+  // /<service>/contract shows one service in depth; /contracts lists them all.
+  const single = location.pathname.match(/^\/([a-z0-9-]+)\/contract\/?$/)?.[1];
+
+  /** One row per field of a JSON schema, in plain words. */
+  const fields = (schema) => Object.entries(schema?.properties ?? {}).map(([name, p]) => {
+    const type = p.enum ? p.enum.join(" · ") : p.type === "array" ? "list" : p.type ?? "value";
+    const range = p.minimum !== undefined && p.maximum !== undefined ? `${p.minimum}–${p.maximum}` : "";
+    const extra = [p.description, p.default !== undefined ? `default ${p.default}` : "", range].filter(Boolean).join(" · ");
+    const optional = (schema.required ?? []).includes(name) ? "" : " (optional)";
+    return `<div class="field"><b>${esc(name)}${optional}</b><span>${esc(type)}${extra ? ` · ${esc(extra)}` : ""}</span></div>`;
+  }).join("") || '<div class="field"><span>Free-form</span></div>';
+
+  const pct = (n) => (n == null ? "–" : `${Math.round(n)}`);
+
+  function card(c, t) {
+    const rails = (c.rails ?? [{ network: c.network }]).map((r) => `<span class="pill">USDC · ${esc(networks[r.network] ?? r.network)}</span>`).join("");
+    const trust = t ? `
+        <div class="sub">Track record (real paid calls only)</div>
+        <div class="stats">
+          <div class="stat"><div class="n">${pct(t.score)}</div><div class="l">Trust score</div></div>
+          <div class="stat"><div class="n">${t.attempts}</div><div class="l">Judged calls</div></div>
+          <div class="stat good"><div class="n">${t.rejectedBeforeCharge}</div><div class="l">Broken promises, buyer paid $0</div></div>
+          <div class="stat ${t.chargedFailures ? "" : "good"}"><div class="n">${t.chargedFailures}</div><div class="l">Times a buyer paid for a bad result</div></div>
+        </div>` : "";
+    const detail = single ? `
+        <div class="sub">How a call works</div>
+        <div class="flow">
+          <div><b>1. You sign</b>A ${esc(c.price)} USDC payment. Nothing moves yet.</div>
+          <div><b>2. Service runs</b>Tribunal holds the payment while the work is done.</div>
+          <div class="ok"><b>3a. Promise kept</b>HTTP 200, the result, and the payment settles.</div>
+          <div class="bad"><b>3b. Promise broken</b>HTTP 422 and a public verdict. You are never charged.</div>
+        </div>
+        <div class="grid2">
+          <div class="box"><h3>What you send</h3>${fields(c.input)}</div>
+          <div class="box"><h3>What you get back</h3>${fields(c.output)}</div>
+        </div>` : "";
+    const seller = c.sellerPromises.length
+      ? `<div class="sub">Seller promises (compiled from plain language)</div><ul>${c.sellerPromises.map((p) => `<li><span class="dot">✓</span><span>${esc(p.text)} <span class="pill">${esc(p.certainty)}</span></span></li>`).join("")}</ul>`
+      : "";
+    const notGuaranteed = c.notGuaranteed.length
+      ? `<div class="sub">Not guaranteed</div><ul>${c.notGuaranteed.map((u) => `<li><span class="dot" style="background:var(--muted)">–</span><span>${esc(u.text)}: ${esc(u.reason)}</span></li>`).join("")}</ul>`
+      : "";
+    const links = single ? '<a href="/contracts">All contracts</a>' : `<a href="/${esc(c.service)}/contract">Open this contract</a>`;
+    return `
+      <section class="card" id="${esc(c.service)}">
         <div class="top"><h2>${esc(c.title)}</h2><span class="price">${esc(c.price)} / call</span></div>
         <p class="desc">${esc(c.description)}</p>
         <div class="pills">
           <span class="pill">${esc(c.endpoint)}</span>
-          <span class="pill">USDC · ${esc(networks[c.network] ?? c.network)}</span>
+          ${rails}
           <span class="pill on">Settled only after validation</span>
           <span class="pill ${c.aiJudge ? "on" : ""}">AI judge ${c.aiJudge ? "on" : "off"}</span>
           <span class="pill">Contract v${esc(c.version)}</span>
         </div>
+        <div class="sub">Guaranteed, or you don&#39;t pay</div>
         <ul>${c.guarantees.map((g) => `<li><span class="dot">✓</span><span>${esc(g)}</span></li>`).join("")}</ul>
-        ${c.sellerPromises.length ? `<div class="sub">Seller promises (compiled from plain language)</div><ul>${c.sellerPromises.map((p) => `<li><span class="dot">✓</span><span>${esc(p.text)} <span class="pill">${esc(p.certainty)}</span></span></li>`).join("")}</ul>` : ""}
-        ${c.notGuaranteed.length ? `<div class="sub">Not guaranteed</div><ul>${c.notGuaranteed.map((u) => `<li><span class="dot" style="background:var(--muted)">–</span><span>${esc(u.text)}: ${esc(u.reason)}</span></li>`).join("")}</ul>` : ""}
-        <div class="hash">Contract hash ${esc(c.contractHash)} · paid to ${esc(c.payTo)}</div>
-        <div class="links"><a href="/${esc(c.service)}/contract">Machine-readable JSON</a><a href="/${esc(c.service)}/crash-test">Crash Test</a><a href="/#challenge">Try to break it</a></div>
-      </section>`).join("");
+        ${seller}
+        ${notGuaranteed}
+        ${detail}
+        ${trust}
+        <div class="hash">Contract hash ${esc(c.contractHash)}</div>
+        <div class="links">
+          ${links}
+          <a href="/${esc(c.service)}/contract?format=json">Machine-readable JSON</a>
+          <a href="/#challenge">Try to break it</a>
+        </div>
+      </section>`;
+  }
+
+  const json = (url) => fetch(url, { headers: { accept: "application/json" } }).then((r) => r.json());
+  Promise.all([json(single ? `/${single}/contract?format=json` : "/contracts"), json("/trust").catch(() => null)]).then(([data, trust]) => {
+    const contracts = single ? [data] : data;
+    if (single) {
+      document.title = `${data.title} · Contract · PayBox Tribunal`;
+      document.getElementById("h1").textContent = data.title;
+      document.getElementById("lead").textContent = `The published contract for POST /${data.service}. If a result breaks any promise below, the response is 422 and your payment is never settled.`;
+    }
+    document.getElementById("list").innerHTML = contracts.map((c) => card(c, trust?.services?.[c.service])).join("");
   });
 </script>
 </body>
