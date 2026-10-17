@@ -122,16 +122,14 @@ async function crashTests() {
 }
 
 // ---------- 4. Public challenges ("Break a guarantee") ----------
+// Only real attacks: an honest output is not a challenge (honest passes are covered by the crash tests).
 async function challenges() {
   const fresh = () => new Date().toISOString();
   const plans: { service: string; name: string; expectCaught: boolean; mutate: (o: any) => void; note: string }[] = [
-    { service: "invoice", name: "honest extraction", expectCaught: false, mutate: () => {}, note: "e2e: honest sample" },
     { service: "invoice", name: "total inflated by 100", expectCaught: true, mutate: (o) => (o.total += 100), note: "e2e: inflated total" },
     { service: "invoice", name: "vendor invented", expectCaught: true, mutate: (o) => (o.vendor_name = "Globex Corporation"), note: "e2e: invented vendor" },
-    { service: "summary", name: "honest summary", expectCaught: false, mutate: () => {}, note: "e2e: honest sample" },
     { service: "summary", name: "invented figure", expectCaught: true, mutate: (o) => (o.summary += " It already has 2 million users."), note: "e2e: invented number" },
     { service: "summary", name: "over the word limit", expectCaught: true, mutate: (o) => (o.summary = Array(80).fill("payments").join(" ")), note: "e2e: too long" },
-    { service: "quote", name: "honest fresh quote", expectCaught: false, mutate: (o) => (o.as_of = fresh()), note: "e2e: honest sample" },
     { service: "quote", name: "price from 15 minutes ago", expectCaught: true, mutate: (o) => (o.as_of = new Date(Date.now() - 900_000).toISOString()), note: "e2e: stale" },
     { service: "quote", name: "zero price", expectCaught: true, mutate: (o) => { o.as_of = fresh(); o.price = 0; }, note: "e2e: zero price" },
   ];
