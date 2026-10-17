@@ -1863,5 +1863,146 @@
       },
       "voucherId": null
     }
+  },
+  {
+    "id": "3388a3e8-91cf-4c46-b3b2-e97a00244a55",
+    "service": "g-usd-exchange-rates",
+    "createdAt": 1792243845993,
+    "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+    "via": "x402",
+    "paymentKey": "e5dff2194e79dd953d535be806b24a9dbf2a5ee34b31875bdf055afcb3215603",
+    "payment": {
+      "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+      "key": "e5dff2194e79dd953d535be806b24a9dbf2a5ee34b31875bdf055afcb3215603",
+      "nonce": "wowa4VQLcsvkpNhLUcGjGv5TSmmcqXK2vrm9aLDNBC8t3dkihPVgyRrBZxArWD7wJ4WiFp1zFi5T4TSiZrKB4N8",
+      "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "validBefore": 1792244145
+    },
+    "idempotencyKey": null,
+    "response": {
+      "status": 200,
+      "body": "[redacted]"
+    },
+    "events": [
+      {
+        "state": "authorized",
+        "at": 1792243845952,
+        "note": "Payment signature verified by the facilitator. Not settled."
+      },
+      {
+        "state": "judged",
+        "at": 1792243845992,
+        "note": "delivered: Passed every contract check."
+      },
+      {
+        "state": "settling",
+        "at": 1792243845992,
+        "note": "HTTP 200: submitting the payment to the facilitator."
+      },
+      {
+        "state": "settled",
+        "at": 1792243846807,
+        "note": "Settled on-chain: 2VUgS9qb7ENwRaqygd6bAwQpyB8moHHjc5PrFzt5VvC6bNaGUWJ2YqCvuom2tJm3VHDWVkFsm15Rex5ckshLKEKV"
+      }
+    ],
+    "input": "[redacted]",
+    "output": "[redacted]",
+    "verdict": {
+      "decision": "delivered",
+      "summary": "Passed every contract check.",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "status": "abstained",
+        "reasoning": "This service has no AI judge; rule checks only."
+      },
+      "decidedAt": 1792243845992
+    },
+    "promises": [
+      {
+        "text": "EUR between 0.5 and 1.5",
+        "interpretation": "rates.EUR must be between 0.5 and 1.5",
+        "rule": {
+          "type": "numeric_bounds",
+          "field": "rates.EUR",
+          "min": 0.5,
+          "max": 1.5
+        },
+        "certainty": "deterministic"
+      },
+      {
+        "text": "MXN between 10 and 30",
+        "interpretation": "rates.MXN must be between 10 and 30",
+        "rule": {
+          "type": "numeric_bounds",
+          "field": "rates.MXN",
+          "min": 10,
+          "max": 30
+        },
+        "certainty": "deterministic"
+      },
+      {
+        "text": "BRL between 3 and 10",
+        "interpretation": "rates.BRL must be between 3 and 10",
+        "rule": {
+          "type": "numeric_bounds",
+          "field": "rates.BRL",
+          "min": 3,
+          "max": 10
+        },
+        "certainty": "deterministic"
+      },
+      {
+        "text": "always includes rates",
+        "interpretation": "rates field is required",
+        "rule": {
+          "type": "required_fields",
+          "fields": [
+            "rates"
+          ]
+        },
+        "certainty": "deterministic"
+      }
+    ],
+    "certificate": {
+      "schema": "tribunal.certificate/v1",
+      "case_id": "3388a3e8-91cf-4c46-b3b2-e97a00244a55",
+      "service": "g-usd-exchange-rates",
+      "contract": {
+        "version": "1.1.0",
+        "hash": "sha256:b72072c78e9c59df30d100adf0d0eb87afa067b3ffae433ed4d87ad5a92384fb"
+      },
+      "validator_version": "1.0.0",
+      "input_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "evaluated_output_hash": "sha256:a8bef3c497f9d05baec01c6e8a0be17cb6eb0c0357f3e68f7378a757047604da",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "used": false,
+        "status": "abstained"
+      },
+      "decision": "delivered",
+      "reason": "Passed every contract check.",
+      "payment": {
+        "via": "x402",
+        "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+        "ref": "sha256:e5dff2194e79dd953d535be806b24a9dbf2a5ee34b31875bdf055afcb3215603",
+        "nonce": "wowa4VQLcsvkpNhLUcGjGv5TSmmcqXK2vrm9aLDNBC8t3dkihPVgyRrBZxArWD7wJ4WiFp1zFi5T4TSiZrKB4N8"
+      },
+      "issued_at": "2026-10-17T13:30:45.992Z"
+    },
+    "signature": "VuvbBXd6Q4scq9LhFK0rs/LwJ2vzWSQ7DJa0+No5MUUp40FtaU2HtCzgcd/rtQ9Fw1rokmkc4c+Pn1XeNk7cCw==",
+    "settlement": {
+      "transaction": "2VUgS9qb7ENwRaqygd6bAwQpyB8moHHjc5PrFzt5VvC6bNaGUWJ2YqCvuom2tJm3VHDWVkFsm15Rex5ckshLKEKV",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "at": 1792243846807
+    },
+    "settlementFailure": null,
+    "appeal": null
   }
 ]
