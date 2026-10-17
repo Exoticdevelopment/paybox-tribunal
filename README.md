@@ -307,6 +307,13 @@ clearly labelled simulated price for offline demos.
   signature on Solana) (on view, every 5 minutes,
   or `POST /audit`). A used nonce flags the case `settled_despite_rejection` publicly, counts as a charged failure
   and drops the service's trust score to 0. Escrow-backed refunds remain on the roadmap.
+- **A guarantee never costs more than the payment.** Most promises are rules: plain code, no AI, no per-call cost
+  (the price-quote service runs on rules alone). The AI judge only checks what rules can't, with no humans in the loop,
+  reads at most 8,000 characters of evidence, and the second review runs only when the first finds a breach. Every
+  case records its measured review cost (tokens and estimated USD), each contract publishes the live average as a
+  share of the price, and a budget rule pauses the AI judge for a service whose average review cost exceeds 30% of its
+  price, so rules decide alone until it comes back down (`JUDGE_MAX_SHARE`). Demo faults are recorded on the case,
+  so a deliberate demo is never mistaken for a real failure.
 - **Consensus judge.** The AI judge can only reject when two independent reviews agree: a second reviewer argues
   the seller's side and must independently confirm a concrete problem. Disagreement means abstain, and the objective
   rules decide. Upheld results cost one review; only breaches cost two.

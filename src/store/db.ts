@@ -7,6 +7,7 @@ import type { Compiled } from "../kit/compiler.ts";
 import type { Promise_ } from "../kit/promises.ts";
 import type { PaymentInfo } from "../payment.ts";
 import type { ProxyDef } from "../kit/proxy.ts";
+import type { ReviewCost } from "../kit/cost.ts";
 
 /** One step in a payment's life. Settlement and quality are tracked separately, never conflated. */
 export type PaymentEvent = {
@@ -46,6 +47,10 @@ export type Case = {
   settlementFailure: { reason: string; at: number } | null;
   /** Set when the chain shows a REJECTED case's authorization was used anyway: the seller settled outside Tribunal. */
   fraud?: { detectedAt: number; note: string } | null;
+  /** What adjudicating this case cost: tokens and estimated USD of its AI calls (absent or zero calls = rules only). */
+  reviewCost?: ReviewCost | null;
+  /** Set when a demo server deliberately broke the promise, so demos are never mistaken for real failures. */
+  demoFault?: string | null;
   appeal: Appeal | null;
 };
 

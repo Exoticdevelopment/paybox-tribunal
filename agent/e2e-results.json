@@ -1,8 +1,8 @@
 {
-  "at": "2026-10-17T13:11:28.898Z",
+  "at": "2026-10-17T17:51:10.042Z",
   "server": "https://paybox-tribunal.onrender.com",
-  "passed": 37,
-  "total": 37,
+  "passed": 27,
+  "total": 28,
   "results": [
     {
       "n": 1,
@@ -43,8 +43,8 @@
       "n": 6,
       "area": "Pages",
       "check": "AI backend answers",
-      "ok": true,
-      "detail": "gemini · gemini-flash-latest · 5705 ms"
+      "ok": false,
+      "detail": "ok=false The operation was aborted due to timeout"
     },
     {
       "n": 7,
@@ -98,170 +98,107 @@
     {
       "n": 14,
       "area": "Challenge",
-      "check": "invoice: honest extraction → passes",
-      "ok": true,
-      "detail": "passed (judge upheld)"
-    },
-    {
-      "n": 15,
-      "area": "Challenge",
       "check": "invoice: total inflated by 100 → caught",
       "ok": true,
       "detail": "caught by total, grounding"
     },
     {
-      "n": 16,
+      "n": 15,
       "area": "Challenge",
       "check": "invoice: vendor invented → caught",
       "ok": true,
       "detail": "caught by grounding"
     },
     {
-      "n": 17,
-      "area": "Challenge",
-      "check": "summary: honest summary → passes",
-      "ok": true,
-      "detail": "passed (judge upheld)"
-    },
-    {
-      "n": 18,
+      "n": 16,
       "area": "Challenge",
       "check": "summary: invented figure → caught",
       "ok": true,
       "detail": "caught by length, invented_numbers"
     },
     {
-      "n": 19,
+      "n": 17,
       "area": "Challenge",
       "check": "summary: over the word limit → caught",
       "ok": true,
       "detail": "caught by length"
     },
     {
-      "n": 20,
-      "area": "Challenge",
-      "check": "quote: honest fresh quote → passes",
-      "ok": true,
-      "detail": "passed (judge abstained)"
-    },
-    {
-      "n": 21,
+      "n": 18,
       "area": "Challenge",
       "check": "quote: price from 15 minutes ago → caught",
       "ok": true,
       "detail": "caught by freshness"
     },
     {
-      "n": 22,
+      "n": 19,
       "area": "Challenge",
       "check": "quote: zero price → caught",
       "ok": true,
       "detail": "caught by price"
     },
     {
-      "n": 23,
+      "n": 20,
       "area": "Certificate",
       "check": "Signed certificate of a real paid case verifies",
       "ok": true,
-      "detail": "case 62445ee1 · Ed25519 valid"
+      "detail": "case a912909a · Ed25519 valid"
     },
     {
-      "n": 24,
+      "n": 21,
       "area": "Certificate",
       "check": "Tampered certificate is rejected",
       "ok": true,
       "detail": "forged verdict → valid: false"
     },
     {
-      "n": 25,
+      "n": 22,
       "area": "Certificate",
       "check": "A different output doesn't match the judged hash",
       "ok": true,
       "detail": "matches: false"
     },
     {
-      "n": 26,
+      "n": 23,
       "area": "Security",
       "check": "Paid route without a payment answers 402, never the result",
       "ok": true,
       "detail": "402 Payment Required"
     },
     {
-      "n": 27,
+      "n": 24,
       "area": "Security",
       "check": "A forged payment header is refused",
       "ok": true,
       "detail": "402, nothing served"
     },
     {
-      "n": 28,
+      "n": 25,
       "area": "Security",
       "check": "Registering an API needs the seller token",
       "ok": true,
       "detail": "403 without x-admin-token"
     },
     {
-      "n": 29,
+      "n": 26,
       "area": "Security",
       "check": "Publishing a contract needs the seller token",
       "ok": true,
       "detail": "403 without x-admin-token"
     },
     {
-      "n": 30,
+      "n": 27,
       "area": "Security",
       "check": "Public record never exposes buyers' data",
       "ok": true,
-      "detail": "14 cases, all redacted"
+      "detail": "40 cases, all redacted"
     },
     {
-      "n": 31,
+      "n": 28,
       "area": "Trust",
       "check": "No buyer ever paid for a broken promise",
       "ok": true,
-      "detail": "14 judged · 7 refused before charge · 0 charged failures"
-    },
-    {
-      "n": 32,
-      "area": "Paid",
-      "check": "Quote that keeps its promise → 200, settled on Solana",
-      "ok": true,
-      "detail": "SOL $103.98 · tx 48NQso2GNn…"
-    },
-    {
-      "n": 33,
-      "area": "Paid",
-      "check": "Stale quote → 422, never settled",
-      "ok": true,
-      "detail": "case 3afb5de0 · charged: false"
-    },
-    {
-      "n": 34,
-      "area": "Paid",
-      "check": "Invoice with a required field missing → 422",
-      "ok": true,
-      "detail": "schema"
-    },
-    {
-      "n": 35,
-      "area": "Paid",
-      "check": "Summary with an unsupported claim → rejected",
-      "ok": true,
-      "detail": "AI judge: breach"
-    },
-    {
-      "n": 36,
-      "area": "Paid",
-      "check": "Appeal with a baseless complaint is not rewarded",
-      "ok": true,
-      "detail": "ruling: upheld, no credit"
-    },
-    {
-      "n": 37,
-      "area": "Paid",
-      "check": "On-chain audit proves the rejected Solana payment never moved",
-      "ok": true,
-      "detail": "Audited on-chain: the signed payment expired unused. This buyer can never be charged for it."
+      "detail": "40 judged · 19 refused before charge · 0 charged failures"
     }
   ]
 }

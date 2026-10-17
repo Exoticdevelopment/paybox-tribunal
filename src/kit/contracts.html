@@ -90,6 +90,25 @@
 
   const pct = (n) => (n == null ? "–" : `${Math.round(n)}`);
 
+  /** How the service is judged and what judging costs, so a guarantee never costs more than the payment. */
+  function adjudication(c) {
+    const a = c.adjudication;
+    if (!a) return "";
+    const m = a.measured ?? {};
+    const measured = m.reviewedCases
+      ? `$${Number(m.avgReviewUsd).toFixed(5)} per AI-reviewed call (${(m.shareOfPrice * 100).toFixed(1)}% of the price, ${m.reviewedCases} cases)`
+      : "no AI-reviewed calls yet";
+    return `
+        <div class="sub">How it's judged, and what judging costs</div>
+        <div class="stats">
+          <div class="stat good"><div class="n">$0</div><div class="l">Rule checks (plain code, every call)</div></div>
+          <div class="stat"><div class="n" style="font-size:22px">${esc(a.aiJudge)}</div><div class="l">AI judge, only for what rules can't see</div></div>
+          <div class="stat"><div class="n" style="font-size:22px">${m.reviewedCases ? `${(m.shareOfPrice * 100).toFixed(1)}%` : "–"}</div><div class="l">Measured AI cost, share of the price</div></div>
+          <div class="stat good"><div class="n" style="font-size:22px">0</div><div class="l">Humans in the loop</div></div>
+        </div>
+        <p class="desc" style="margin-top:12px">${esc(a.budget)} The second AI review runs ${esc(a.secondReview)}. Measured: ${esc(measured)}.</p>`;
+  }
+
   function card(c, t) {
     const rails = (c.rails ?? [{ network: c.network }]).map((r) => `<span class="pill">USDC · ${esc(networks[r.network] ?? r.network)}</span>`).join("");
     const trust = t ? `
@@ -135,6 +154,7 @@
         ${seller}
         ${notGuaranteed}
         ${detail}
+        ${adjudication(c)}
         ${trust}
         <div class="hash">Contract hash ${esc(c.contractHash)}</div>
         <div class="links">

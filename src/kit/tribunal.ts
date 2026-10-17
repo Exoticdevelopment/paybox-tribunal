@@ -16,6 +16,7 @@ import {
   type SettlementStatus,
 } from "./certificate.ts";
 import { compilePromises } from "./compiler.ts";
+import { judgeBudget, metered } from "./cost.ts";
 import { evidenceCases } from "./evidence.ts";
 import { runCrashTest, type CrashReport } from "./crashtest.ts";
 import { callUpstream, inferSchema, proxyGuarantee, proxyInputSchema, slugify, ProxyInput, type ProxyDef } from "./proxy.ts";
@@ -100,6 +101,9 @@ function publicCase(c: Case) {
     certificate: c.certificate,
     signature: c.signature,
     appeal: c.appeal && { filedAt: new Date(c.appeal.filedAt).toISOString(), ruling: c.appeal.ruling },
+    // What adjudicating this case cost (null on cases recorded before costs were measured).
+    reviewCost: c.reviewCost ? { aiCalls: c.reviewCost.calls, inputTokens: c.reviewCost.inputTokens, outputTokens: c.reviewCost.outputTokens, estimatedUsd: c.reviewCost.usd } : null,
+    demoFault: c.demoFault ?? null,
   };
 }
 
@@ -199,9 +203,31 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
     const body = contractBody(g);
     return { version: body.version, hash: sha256(body) };
   };
+  /** Measured cost of AI review for a service, and whether its budget still allows it. */
+  const budgetOf = (g: AnyGuarantee) =>
+    judgeBudget(
+      db.allCases().filter((x) => x.service === g.id).sort((a, b) => a.createdAt - b.createdAt).map((x) => x.reviewCost),
+      g.price,
+      config.judgeMaxShare,
+    );
+
+  /** How a service is adjudicated and what it costs. Live numbers, so kept outside the hashed contract body. */
+  const adjudicationOf = (g: AnyGuarantee) => {
+    const b = budgetOf(g);
+    const aiConfigured = Boolean(effective(g).judge) && llmAvailable();
+    return {
+      rules: "Deterministic code: schema, math, limits, freshness, grounding. No AI, no per-call cost.",
+      aiJudge: !aiConfigured ? "off" : b.aiAllowed ? "on" : "paused (over budget)",
+      humans: "none: every review is automated",
+      secondReview: "only when the first review finds a breach",
+      budget: `AI review stays on only while it averages at most ${Math.round(b.maxShare * 100)}% of the price; above that, rules decide alone.`,
+      measured: { reviewedCases: b.reviewedCases, avgReviewUsd: b.avgReviewUsd, shareOfPrice: b.shareOfPrice },
+    };
+  };
+
   const contractOf = (g: AnyGuarantee) => {
     const body = contractBody(g);
-    return { ...body, contractHash: sha256(body) };
+    return { ...body, contractHash: sha256(body), adjudication: adjudicationOf(g) };
   };
 
   // ---------- Discovery ----------
@@ -461,7 +487,12 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
     }
 
     const promises = promisesOf(g);
-    const verdict = await decide(effective(g, promises), body.data, output, judge, promises);
+    // Budget rule: if AI review has been costing more than its share of the price, rules decide alone.
+    const budget = budgetOf(g);
+    const judgeForCase: JudgeFn = budget.aiAllowed
+      ? judge
+      : async () => ({ status: "abstained", reasoning: `AI review paused: it averaged ${Math.round(budget.shareOfPrice * 100)}% of the price, above the ${Math.round(budget.maxShare * 100)}% budget. Rule checks decide.` });
+    const { result: verdict, cost: reviewCost } = await metered(() => decide(effective(g, promises), body.data, output, judgeForCase, promises));
     const via = voucher ? "voucher" : "x402";
     log("judged", `${verdict.decision}: ${verdict.summary}`);
     if (verdict.decision === "rejected") log("not_charged", "HTTP 422: settlement cancelled. The signed authorization expires unused.");
@@ -533,6 +564,8 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
       settlement: null,
       settlementFailure: null,
       appeal: null,
+      reviewCost,
+      demoFault: fault ?? null,
     });
     return c.json(response, status);
   };
@@ -814,7 +847,7 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
       method: TRUST_METHOD,
       overall: trustReport(cases),
       services: Object.fromEntries(
-        allGuarantees().map((g) => [g.id, { title: g.title, price: g.price, ...trustReport(cases.filter((x) => x.service === g.id)) }]),
+        allGuarantees().map((g) => [g.id, { title: g.title, price: g.price, ...trustReport(cases.filter((x) => x.service === g.id)), review: budgetOf(g) }]),
       ),
       network: config.network,
     });

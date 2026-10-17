@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
 import { config } from "./config.ts";
+import { recentUsage, recordUsage } from "./kit/cost.ts";
 
 export type StructuredRequest<T> = {
   schema: z.ZodType<T>;
@@ -30,7 +31,7 @@ let lastError: { at: string; message: string } | null = null;
 
 export function llmStatus() {
   const model = config.llmBackend === "gemini" ? config.geminiModel : config.llmBackend === "api" ? config.llmModel : null;
-  return { backend: config.llmBackend, model, lastError };
+  return { backend: config.llmBackend, model, lastError, recentCost: recentUsage() };
 }
 
 /** Sends a tiny structured request and reports whether the configured AI answers correctly. */
@@ -87,6 +88,7 @@ async function viaApi<T>(req: StructuredRequest<T>): Promise<T | null> {
     output_config: { effort: req.effort, format: betaZodOutputFormat(req.schema) },
     messages: [{ role: "user", content: req.user }],
   });
+  recordUsage(config.llmModel, response.usage?.input_tokens ?? 0, response.usage?.output_tokens ?? 0);
   if (response.stop_reason === "refusal") return null;
   return (response.parsed_output as T | null) ?? null;
 }
@@ -136,7 +138,13 @@ async function geminiCall<T>(model: string, req: StructuredRequest<T>): Promise<
     }),
   });
   if (!res.ok) throw new Error(`Gemini (${model}) answered ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  const body = (await res.json()) as { candidates?: { content?: { parts?: { text?: string }[] }; finishReason?: string }[] };
+  const body = (await res.json()) as {
+    candidates?: { content?: { parts?: { text?: string }[] }; finishReason?: string }[];
+    usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number; thoughtsTokenCount?: number };
+  };
+  const u = body.usageMetadata;
+  // Thinking tokens are billed as output.
+  recordUsage(model, u?.promptTokenCount ?? 0, (u?.candidatesTokenCount ?? 0) + (u?.thoughtsTokenCount ?? 0));
   const text = body.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
   const json = extractJson(text);
   if (json === undefined) return null;

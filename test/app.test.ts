@@ -387,3 +387,68 @@ test("an expired, unused authorization is reconciled as never charged", async ()
   assert.equal(r.payment.status, "not_attempted");
   assert.equal(r.payment.timeline.at(-1).state, "expired_unsettled");
 });
+
+test("each case records what its AI review cost; rules-only cases cost nothing", async () => {
+  const { recordUsage } = await import("../src/kit/cost.ts");
+  const meteredApp = createApp({
+    db,
+    paywall: fakePaywall,
+    // Like the real judge: services without an AI judge never reach the model.
+    judge: async (g) => {
+      if (!g.judge) return { status: "abstained", reasoning: "rules only" };
+      recordUsage("gemini-2.5-flash", 1000, 200);
+      return { status: "upheld", reasoning: "ok", findings: [] };
+    },
+  });
+  const res = await meteredApp.request("/summary", {
+    method: "POST",
+    headers: { "content-type": "application/json", "payment-signature": "paid" },
+    body: JSON.stringify({ text: ARTICLE, max_words: 40 }),
+  });
+  const { caseId } = await res.json();
+  const v = await (await meteredApp.request(`/verdicts/${caseId}`)).json();
+  assert.deepEqual(v.reviewCost, { aiCalls: 1, inputTokens: 1000, outputTokens: 200, estimatedUsd: 0.0008 });
+
+  const quote = await meteredApp.request("/quote", {
+    method: "POST",
+    headers: { "content-type": "application/json", "payment-signature": "paid-2" },
+    body: JSON.stringify({ asset: "BTC", max_age_seconds: 120 }),
+  });
+  const q = await (await meteredApp.request(`/verdicts/${(await quote.json()).caseId}`)).json();
+  assert.equal(q.reviewCost.aiCalls, 0, "the quote service is rules only");
+});
+
+test("AI review pauses when it costs more than its share of the price; rules then decide", async () => {
+  const { recordUsage } = await import("../src/kit/cost.ts");
+  let judgeCalls = 0;
+  const pricey = createApp({
+    db,
+    paywall: fakePaywall,
+    judge: async () => {
+      judgeCalls++;
+      recordUsage("gemini-2.5-flash", 1_000_000, 0); // $0.30 for a $0.01 call
+      return { status: "upheld", reasoning: "ok", findings: [] };
+    },
+  });
+  const buy = (sig: string) =>
+    pricey.request("/summary", {
+      method: "POST",
+      headers: { "content-type": "application/json", "payment-signature": sig },
+      body: JSON.stringify({ text: ARTICLE, max_words: 40 }),
+    });
+  await buy("p1");
+  const second = await (await buy("p2")).json();
+  assert.equal(judgeCalls, 1, "the second case is not sent to the AI");
+  assert.equal(second.decision, "delivered");
+  assert.match(second.verdict.judge.reasoning, /AI review paused/);
+  const contract = await (await pricey.request("/summary/contract", { headers: { accept: "application/json" } })).json();
+  assert.equal(contract.adjudication.aiJudge, "off", "LLM is off in tests, so the contract reports off");
+  assert.ok(contract.adjudication.measured.shareOfPrice > 0.3);
+});
+
+test("demo faults are recorded on the case, so demos are never mistaken for real failures", async () => {
+  const res = await invoice({ [FAULT_HEADER]: "wrong_total" });
+  const { caseId } = await res.json();
+  const v = await (await app.request(`/verdicts/${caseId}`)).json();
+  assert.equal(v.demoFault, "wrong_total");
+});

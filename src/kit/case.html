@@ -103,6 +103,12 @@
       `<li><span class="dot ${violations.length ? "bad" : "ok"}">${violations.length ? "✕" : "✓"}</span><span>${violations.length ? `${violations.length} rule check(s) failed` : "Schema and every objective rule passed"}</span></li>`,
       ...violations.map((x) => `<li><span class="dot bad">✕</span><span><b style="color:var(--ink)">${esc(x.rule)}</b>: ${esc(x.detail)}</span></li>`),
       `<li><span class="dot ${v.verdict.judge.status === "breach" ? "bad" : v.verdict.judge.status === "upheld" ? "ok" : "muted"}">${v.verdict.judge.status === "breach" ? "✕" : v.verdict.judge.status === "upheld" ? "✓" : "–"}</span><span>AI judge: <b style="color:var(--ink)">${esc(v.verdict.judge.status)}</b>. ${esc(v.verdict.judge.reasoning)}</span></li>`,
+      v.reviewCost
+        ? `<li><span class="dot muted">$</span><span>Review cost: <b style="color:var(--ink)">${v.reviewCost.aiCalls
+            ? `${v.reviewCost.aiCalls} automated AI review${v.reviewCost.aiCalls > 1 ? "s" : ""} · ${v.reviewCost.inputTokens + v.reviewCost.outputTokens} tokens · ≈ $${v.reviewCost.estimatedUsd.toFixed(5)}`
+            : "rules only · $0"}</b>. No humans involved.</span></li>`
+        : "",
+      v.demoFault ? `<li><span class="dot muted">!</span><span>Demo: the seller deliberately broke this promise (<b style="color:var(--ink)">${esc(v.demoFault)}</b>) to show it is caught.</span></li>` : "",
     ].join("");
 
     const timeline = p.timeline.map((e) => {

@@ -65,5 +65,7 @@ export const config = {
     : undefined,
   /** How long after delivery a paid result can be appealed. */
   appealWindowMs: 24 * 60 * 60 * 1000,
+  /** The AI judge stays on only while its average cost per judged case is at most this share of the price. */
+  judgeMaxShare: Number(process.env.JUDGE_MAX_SHARE ?? 0.3),
   isHosted,
 } as const;

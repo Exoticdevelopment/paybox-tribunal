@@ -2,6 +2,9 @@ import { z } from "zod";
 import { llmAvailable, structured } from "../llm.ts";
 import type { JudgeFn, JudgeRuling } from "./types.ts";
 
+/** About 2,000 tokens: enough for the services here, and a ceiling on the cost of any one review. */
+export const MAX_EVIDENCE_CHARS = Number(process.env.JUDGE_MAX_EVIDENCE_CHARS ?? 8000);
+
 const RulingShape = z.object({
   breach: z.boolean().describe("true if the output breaks the service's promise"),
   findings: z.array(z.string()).describe("Each specific problem, quoting what the evidence actually says"),
@@ -20,9 +23,11 @@ export const createClaudeJudge = (ask: typeof structured = structured, available
   if (!g.judge) return { status: "abstained", reasoning: "This service has no AI judge; rule checks only." };
   if (!available()) return { status: "abstained", reasoning: "AI judge not configured; rule checks only." };
 
-  const evidence = [g.judge.evidence(input, output), complaint ? `<buyer_complaint>\n${complaint}\n</buyer_complaint>` : ""]
+  const full = [g.judge.evidence(input, output), complaint ? `<buyer_complaint>\n${complaint}\n</buyer_complaint>` : ""]
     .filter(Boolean)
     .join("\n\n");
+  // A hard cap on what the judge reads keeps each review's cost bounded, whatever the buyer sends.
+  const evidence = full.length > MAX_EVIDENCE_CHARS ? `${full.slice(0, MAX_EVIDENCE_CHARS)}\n[evidence truncated at ${MAX_EVIDENCE_CHARS} characters]` : full;
 
   const ruling = await ask({
     schema: RulingShape,
