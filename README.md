@@ -327,9 +327,28 @@ clearly labelled simulated price for offline demos.
 
 ## Roadmap
 
+**Facilitator-agnostic, with a second facilitator ready.** Tribunal only needs a standard x402 v2 facilitator.
+It runs on PayAI today. The [Ultravioleta DAO facilitator](https://facilitator.ultravioletadao.xyz/) is compatible:
+its live `/supported` list includes x402 v2 `exact` on Base (`eip155:8453`) and Solana mainnet, the two rails PayBox signs.
+Planned with it:
+
+- **Backup facilitator:** settle through Ultravioleta when the primary one fails, so a facilitator outage never
+  blocks a delivered result from being paid.
+- **Escrow for high-value calls (x402r):** small calls stay on rules (free) and plain pay-on-validation; for large
+  ones, funds sit in escrow and Tribunal's verdict releases or refunds them. That closes today's one gap: a dishonest
+  seller can't settle a rejected payment at all, instead of being caught on-chain afterwards. (PayBox proposals
+  support `exact` today; escrow would serve other x402 clients first.)
+- **Durable evidence (DX402):** keep the delivered response, readable only by the buyer, next to the signed
+  certificate, so a dispute has both the verdict and what was actually delivered.
+- **Discovery (Bazaar):** list guaranteed services where agents look for paid endpoints, with their contract and
+  live trust score.
+- **More networks:** the same contracts on the other EVM and non-EVM networks the facilitator supports.
+
+Also planned:
+
 - Anchor verdict hashes on Base (ERC-8004 Validation Registry) so the record can't be rewritten.
-- Escrow mode via x402r for high-value calls: Tribunal decides, escrow guarantees.
 - Contract format proposed as an x402 extension, alongside Bazaar discovery metadata.
+- Rules-only by default for micro-payments, AI review priced in by the seller for larger ones.
 
 ## Layout
 
