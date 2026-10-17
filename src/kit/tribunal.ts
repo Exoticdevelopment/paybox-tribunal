@@ -105,6 +105,11 @@ function publicCase(c: Case) {
 
 export function createTribunal({ db, guarantees, paywall, judge, chain = viemChainReader }: TribunalDeps) {
   const app = new Hono<Env>();
+  // Several routes answer HTML to browsers and JSON to agents: keep caches from mixing the two.
+  app.use(async (c, next) => {
+    await next();
+    c.header("Vary", "Accept");
+  });
   const vouchers = new Vouchers(db, config.voucherSecret);
   const byId = new Map(guarantees.map((g) => [g.id, g]));
   const allowLocalUpstream = !config.isHosted;
