@@ -434,7 +434,7 @@
       $("c-out").innerHTML =
         body.promises.map((p) => `<div class="promise"><span class="tag ${certaintyTag[p.certainty]}">${p.certainty}</span><div><q>${esc(p.text)}</q><small>${esc(p.interpretation)}</small></div></div>`).join("") +
         body.notGuaranteed.map((u) => `<div class="promise"><span class="tag t-none">Not guaranteed</span><div><q>${esc(u.text)}</q><small>${esc(u.reason)}</small></div></div>`).join("");
-      $("c-note").textContent = `Compiled with ${body.engine === "ai" ? "Claude" : "the offline rule parser"}. Nothing is enforced until you confirm.`;
+      $("c-note").textContent = `Compiled with ${body.engine === "ai" ? "the AI compiler (output validated against the closed catalog)" : "the offline rule parser"}. Nothing is enforced until you confirm.`;
     } finally { $("c-go").disabled = false; }
   };
   $("c-publish").onclick = async () => {

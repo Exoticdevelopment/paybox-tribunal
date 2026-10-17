@@ -61,7 +61,7 @@ catalog of 9 rule types**, so the AI never writes code that runs:
   ("at most 25 words" / "máximo 25 palabras", "between 0 and 60" / "entre 0 y 60", "never invents figures" /
   "no inventa cifras", "no older than 60 seconds" / "menos de 60 segundos de antigüedad", "always includes X" /
   "siempre incluye X"). Wording it doesn't recognise becomes a promise for the AI judge or is marked *not
-  guaranteed*; it never invents a rule. With an AI backend configured, Claude compiles any wording in any language
+  guaranteed*; it never invents a rule. With an AI backend configured (Gemini live, or Claude), the AI compiles any wording in any language
   into the same closed catalog.
 
 `POST /<service>/promises/compile { text }` → draft · `POST /<service>/promises/publish { draftId, confirm: true }`
@@ -336,7 +336,7 @@ src/
     text.ts            grounding helpers
     dashboard.ts       live verdicts page
   services/            example guaranteed services (invoice, summary)
-  llm.ts               Claude via API, local CLI, or off
+  llm.ts               AI backend: Gemini, Claude API, local Claude CLI, or off
   server.ts            x402 middleware, facilitator, settlement hook
 plugin/                PayBox marketplace manifest + agent skill (draft until official format)
 test/                  node:test suite
