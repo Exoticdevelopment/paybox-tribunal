@@ -179,6 +179,8 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
     price: g.price,
     network: config.network,
     payTo: config.payTo,
+    /** Every way to pay: USDC on the primary network, plus Solana when configured. */
+    rails: acceptsFor(g.price).map((o) => ({ network: o.network, payTo: o.payTo })),
     settlement: "after-validation",
     input: schemasOf(g).input,
     output: schemasOf(g).output,

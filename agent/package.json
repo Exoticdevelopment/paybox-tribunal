@@ -1,0 +1,19 @@
+{
+  "name": "paybox-tribunal-buyer-agent",
+  "version": "1.0.0",
+  "description": "Buyer agent on the official PayBox SDK that pays Tribunal-guaranteed APIs",
+  "scripts": {
+    "demo": "node buyer.ts",
+    "honest": "node buyer.ts honest",
+    "broken": "node buyer.ts broken",
+    "login": "paybox login",
+    "connect": "paybox connect"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@paybox-sh/sdk": "^2.2.0"
+  },
+  "private": true
+}
