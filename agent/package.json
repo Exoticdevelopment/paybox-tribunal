@@ -7,7 +7,8 @@
     "honest": "node buyer.ts honest",
     "broken": "node buyer.ts broken",
     "login": "paybox login",
-    "connect": "paybox connect"
+    "connect": "paybox connect",
+    "suite": "node buyer.ts suite"
   },
   "author": "",
   "license": "ISC",
