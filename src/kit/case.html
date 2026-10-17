@@ -39,6 +39,7 @@
   ul.items { list-style: none; padding: 0; margin: 0; }
   ul.items li { border-top: 1px solid var(--hairline); padding: 12px 0; font-size: 15px; display: flex; gap: 10px; }
   ul.items li:first-child { border-top: 0; }
+  ul.items li > span:last-child { min-width: 0; overflow-wrap: anywhere; }
   .dot { flex: none; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font: 700 12px var(--font); color: #fff; margin-top: 2px; }
   .dot.ok { background: var(--up); } .dot.bad { background: var(--down); } .dot.info { background: var(--primary); } .dot.muted { background: var(--muted); }
   .kv { font-size: 13px; color: var(--muted); margin-top: 16px; overflow-wrap: anywhere; }
@@ -57,7 +58,13 @@
 <script>
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
   const id = location.pathname.split("/").filter(Boolean).pop();
-  const explorers = { "eip155:84532": "https://sepolia.basescan.org/tx/", "eip155:8453": "https://basescan.org/tx/" };
+  const explorers = {
+    "eip155:84532": "https://sepolia.basescan.org/tx/",
+    "eip155:8453": "https://basescan.org/tx/",
+    "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "https://solscan.io/tx/",
+  };
+  // Long hashes and signatures read better shortened; the full value stays one click away.
+  const shortHashes = (text) => text.replace(/(0x)?[0-9A-Za-z]{40,}/g, (h) => `${h.slice(0, 10)}…${h.slice(-6)}`);
   const time = (t) => new Date(t).toLocaleString();
   const stateLabel = {
     authorized: ["info", "Payment signed and verified, not settled"],
@@ -100,9 +107,9 @@
 
     const timeline = p.timeline.map((e) => {
       const [tone, label] = stateLabel[e.state] ?? ["muted", e.state];
-      return `<li><span class="dot ${tone}">${tone === "bad" ? "!" : tone === "ok" ? "✓" : "•"}</span><span><b style="color:var(--ink)">${esc(label)}</b><br><span style="font-size:13px;color:var(--muted)">${esc(e.note)} · ${esc(time(e.at))}</span></span></li>`;
+      return `<li><span class="dot ${tone}">${tone === "bad" ? "!" : tone === "ok" ? "✓" : "•"}</span><span><b style="color:var(--ink)">${esc(label)}</b><br><span style="font-size:13px;color:var(--muted)">${esc(shortHashes(e.note))} · ${esc(time(e.at))}</span></span></li>`;
     }).join("");
-    const tx = p.settlement?.transaction?.startsWith("0x")
+    const tx = p.settlement && explorers[p.settlement.network] && !p.settlement.transaction.startsWith("unknown")
       ? `<a href="${explorers[p.settlement.network] ?? "#"}${esc(p.settlement.transaction)}" target="_blank" rel="noopener">View transaction →</a>` : "";
 
     document.getElementById("root").innerHTML = `
