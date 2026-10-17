@@ -32,6 +32,8 @@ export function readPayment(header: string | undefined): PaymentInfo {
     const inner = decoded.payload as { authorization?: Auth; permit2Authorization?: Auth };
     const auth = inner.authorization ?? inner.permit2Authorization;
     const accepted = decoded.accepted as { asset?: string; network?: string } | undefined;
+    // Solana (exact SVM) carries a signed transaction instead of an authorization; replay protection
+    // still works through the payload key, and the payer is filled in from the settlement result.
     return {
       payer: auth?.from ?? null,
       key: paymentKey(decoded.payload),

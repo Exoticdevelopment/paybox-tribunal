@@ -14,7 +14,8 @@ import { proposeX402, x402OutputSchema } from "./paybox.js";
  */
 const PROTOCOL_VERSION = "2026-07-28";
 const BASE_URL = (process.env.TRIBUNAL_URL ?? "https://paybox-tribunal.onrender.com").replace(/\/+$/, "");
-const CHAIN = "eip155:8453" as const; // Base mainnet USDC
+/** USDC on Base is the primary rail; USDC on Solana is also accepted by the Tribunal server. */
+const CHAINS = { base: "eip155:8453", solana: "solana:mainnet" } as const;
 /** Atomic USDC (6 decimals): 10000 = 0.01 USDC, the price of every Tribunal service. */
 const MAX_AMOUNT = process.env.TRIBUNAL_MAX_AMOUNT ?? "10000";
 const TIMEOUT_MS = 4000;
@@ -43,6 +44,10 @@ const demoFault = z
   .regex(/^[a-z_]{1,40}$/)
   .optional()
   .describe("Demo only: ask a demo server to deliberately break its promise (e.g. wrong_total, stale) to show that a broken promise is never charged.");
+const payOn = z
+  .enum(["base", "solana"])
+  .default("base")
+  .describe("Which USDC to pay with: base (default) or solana. Pick the one the user's wallet holds.");
 
 function createServer() {
   const server = new McpServer({ name: "paybox-tribunal", version: "1.0.0" }, { supportedProtocolVersions: [PROTOCOL_VERSION] });
@@ -111,12 +116,12 @@ function createServer() {
       title: "Extract an invoice (guaranteed)",
       description:
         "Proposes a 0.01 USDC x402 payment to extract structured data from invoice or receipt text. Tribunal checks math, totals and that every value appears in the document before settling. If the result fails, the response is 422 and the payment is never settled. Poll the returned request; do not call this tool again to finish payment.",
-      inputSchema: z.object({ document: z.string().min(20).max(50000).describe("Raw invoice or receipt text"), demo_fault: demoFault }).strict(),
+      inputSchema: z.object({ document: z.string().min(20).max(50000).describe("Raw invoice or receipt text"), demo_fault: demoFault, pay_on: payOn }).strict(),
       outputSchema: x402OutputSchema,
       annotations: paidAnnotations,
     },
-    async ({ document, demo_fault }) =>
-      proposeX402({ chain: CHAIN, url: endpoint("/invoice", demo_fault), maxAmount: MAX_AMOUNT, method: "POST", body: { document } }),
+    async ({ document, demo_fault, pay_on }) =>
+      proposeX402({ chain: CHAINS[pay_on], url: endpoint("/invoice", demo_fault), maxAmount: MAX_AMOUNT, method: "POST", body: { document } }),
   );
 
   server.registerTool(
@@ -126,13 +131,13 @@ function createServer() {
       description:
         "Proposes a 0.01 USDC x402 payment to summarize a text within a word limit. Tribunal checks the limit and that no number is invented before settling; broken promises are never charged.",
       inputSchema: z
-        .object({ text: z.string().min(200).max(50000), max_words: z.number().int().min(20).max(200).default(60), demo_fault: demoFault })
+        .object({ text: z.string().min(200).max(50000), max_words: z.number().int().min(20).max(200).default(60), demo_fault: demoFault, pay_on: payOn })
         .strict(),
       outputSchema: x402OutputSchema,
       annotations: paidAnnotations,
     },
-    async ({ text: body, max_words, demo_fault }) =>
-      proposeX402({ chain: CHAIN, url: endpoint("/summary", demo_fault), maxAmount: MAX_AMOUNT, method: "POST", body: { text: body, max_words } }),
+    async ({ text: body, max_words, demo_fault, pay_on }) =>
+      proposeX402({ chain: CHAINS[pay_on], url: endpoint("/summary", demo_fault), maxAmount: MAX_AMOUNT, method: "POST", body: { text: body, max_words } }),
   );
 
   server.registerTool(
@@ -142,13 +147,13 @@ function createServer() {
       description:
         "Proposes a 0.01 USDC x402 payment for a BTC, ETH or SOL price in USD, guaranteed no older than max_age_seconds. A stale or wrong quote is rejected and never charged.",
       inputSchema: z
-        .object({ asset: z.enum(["BTC", "ETH", "SOL"]), max_age_seconds: z.number().int().min(10).max(3600).default(120), demo_fault: demoFault })
+        .object({ asset: z.enum(["BTC", "ETH", "SOL"]), max_age_seconds: z.number().int().min(10).max(3600).default(120), demo_fault: demoFault, pay_on: payOn })
         .strict(),
       outputSchema: x402OutputSchema,
       annotations: paidAnnotations,
     },
-    async ({ asset, max_age_seconds, demo_fault }) =>
-      proposeX402({ chain: CHAIN, url: endpoint("/quote", demo_fault), maxAmount: MAX_AMOUNT, method: "POST", body: { asset, max_age_seconds } }),
+    async ({ asset, max_age_seconds, demo_fault, pay_on }) =>
+      proposeX402({ chain: CHAINS[pay_on], url: endpoint("/quote", demo_fault), maxAmount: MAX_AMOUNT, method: "POST", body: { asset, max_age_seconds } }),
   );
 
   // ---------- Any API a seller guaranteed with Tribunal ----------
@@ -183,13 +188,14 @@ function createServer() {
           slug: z.string().regex(/^[a-z0-9-]{1,60}$/),
           query: z.record(z.string(), z.string()).optional(),
           body: z.record(z.string(), z.json()).optional(),
+          pay_on: payOn,
         })
         .strict(),
       outputSchema: x402OutputSchema,
       annotations: paidAnnotations,
     },
-    async ({ slug, query, body }) =>
-      proposeX402({ chain: CHAIN, url: endpoint(`/g/${slug}`), maxAmount: MAX_AMOUNT, method: "POST", body: { ...(query ? { query } : {}), ...(body ? { body } : {}) } }),
+    async ({ slug, query, body, pay_on }) =>
+      proposeX402({ chain: CHAINS[pay_on], url: endpoint(`/g/${slug}`), maxAmount: MAX_AMOUNT, method: "POST", body: { ...(query ? { query } : {}), ...(body ? { body } : {}) } }),
   );
 
   // ---------- After paying ----------

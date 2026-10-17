@@ -2,10 +2,11 @@ import { serve } from "@hono/node-server";
 import type { MiddlewareHandler } from "hono";
 import { paymentMiddleware, x402ResourceServer } from "@x402/hono";
 import { ExactEvmScheme } from "@x402/evm/exact/server";
+import { ExactSvmScheme } from "@x402/svm/exact/server";
 import { HTTPFacilitatorClient } from "@x402/core/server";
 import { config } from "./config.ts";
 import { createApp } from "./app.ts";
-import { paywallRoutes } from "./kit/tribunal.ts";
+import { acceptsFor, paywallRoutes } from "./kit/tribunal.ts";
 import { services } from "./services/index.ts";
 import { Db } from "./store/db.ts";
 import { paymentKey } from "./payment.ts";
@@ -14,6 +15,7 @@ const db = new Db(config.dataFile);
 
 const resourceServer = new x402ResourceServer(new HTTPFacilitatorClient({ url: config.facilitatorUrl }))
   .register(config.network, new ExactEvmScheme())
+  .register(config.solanaNetwork, new ExactSvmScheme())
   // Funds only move here, after the handler returned < 400. Record it on the case.
   .onAfterSettle(async ({ paymentPayload, result }) => {
     if (!result.success) return;
@@ -43,7 +45,7 @@ const paywall: MiddlewareHandler = paywallOff
         ...paywallRoutes(services),
         // Every API a seller guarantees through /guard is served (and paid) here.
         "POST /g/:slug": {
-          accepts: [{ scheme: "exact" as const, price: process.env.PRICE_PROXY ?? process.env.PRICE ?? "$0.01", network: config.network, payTo: config.payTo }],
+          accepts: acceptsFor(process.env.PRICE_PROXY ?? process.env.PRICE ?? "$0.01"),
           description: "Guaranteed API proxy. Pay-on-validation: settles only if the upstream response keeps the seller's published promise.",
           mimeType: "application/json",
         },
@@ -70,6 +72,7 @@ const fetchBehindProxy = (req: Request) => {
 serve({ fetch: fetchBehindProxy, port: config.port }, (info) => {
   console.log(`PayBox Tribunal on http://localhost:${info.port}`);
   console.log(`  network ${config.network} → ${config.payTo}`);
+  if (config.payToSolana) console.log(`  also ${config.solanaNetwork} → ${config.payToSolana}`);
   console.log(`  services: ${services.map((s) => `${s.id} (${s.price})`).join(", ")}`);
   console.log(`  AI: ${config.llmBackend}${config.llmBackend === "api" ? ` (${config.llmModel})` : ""}`);
   if (config.llmBackend !== "off") void warmUp(info.port);

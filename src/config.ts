@@ -30,6 +30,12 @@ export const config = {
   port: Number(process.env.PORT ?? 4021),
   payTo: required("PAY_TO", "0x0000000000000000000000000000000000000000") as `0x${string}`,
   network: required("NETWORK", "eip155:84532") as `${string}:${string}`,
+  /**
+   * Optional second payment rail: USDC on Solana, offered next to the primary network.
+   * Set PAY_TO_SOLANA (a public Solana address) to enable it. Mainnet unless SOLANA_NETWORK says otherwise.
+   */
+  payToSolana: process.env.PAY_TO_SOLANA || undefined,
+  solanaNetwork: (process.env.SOLANA_NETWORK || "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp") as `${string}:${string}`,
   facilitatorUrl: required("FACILITATOR_URL", "https://x402.org/facilitator"),
   voucherSecret: required("VOUCHER_SECRET", "dev-only-secret"),
   anthropicKey,

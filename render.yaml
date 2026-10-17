@@ -21,6 +21,8 @@ services:
         value: "1"
       - key: PAY_TO
         sync: false
+      - key: PAY_TO_SOLANA # optional second rail: USDC on Solana (public address)
+        sync: false
       - key: VOUCHER_SECRET
         generateValue: true
       - key: ADMIN_TOKEN

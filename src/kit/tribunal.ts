@@ -50,12 +50,19 @@ const AppealRequest = z.object({
 });
 
 /** x402 route config for every guarantee, ready for paymentMiddleware(). */
+/** Payment options for one price: the primary network first, then Solana when it is configured. */
+export function acceptsFor(price: string) {
+  const options = [{ scheme: "exact" as const, price, network: config.network, payTo: config.payTo as string }];
+  if (config.payToSolana) options.push({ scheme: "exact" as const, price, network: config.solanaNetwork, payTo: config.payToSolana });
+  return options;
+}
+
 export function paywallRoutes(guarantees: AnyGuarantee[]) {
   return Object.fromEntries(
     guarantees.map((g) => [
       `POST /${g.id}`,
       {
-        accepts: [{ scheme: "exact" as const, price: g.price, network: config.network, payTo: config.payTo }],
+        accepts: acceptsFor(g.price),
         description: `${g.title}. Pay-on-validation: settles only if the output passes the contract at GET /${g.id}/contract.`,
         mimeType: "application/json",
       },

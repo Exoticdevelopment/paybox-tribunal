@@ -148,6 +148,14 @@ checks balances on-chain. **8/8 checks pass** ([full report](docs/testnet-report
   recorded `settle_failed` (separate from the passing verdict), the buyer kept their money, and an on-chain
   read of `authorizationState` confirmed the nonce was never used ([x402#1062](https://github.com/x402-foundation/x402/issues/1062)).
 
+## Two payment rails: Base and Solana
+
+USDC on **Base** is the primary rail. Set `PAY_TO_SOLANA` and every paid route also offers **USDC on Solana**
+(`solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp`, exact SVM scheme, fees sponsored by the PayAI facilitator), the two
+rails PayBox supports for x402. The plugin's paid tools take `pay_on: "base" | "solana"`. Pay-on-validation works
+the same on both: a 422 is never settled. Limit: the on-chain fraud audit reads EIP-3009 `authorizationState`, so
+it covers Base; Solana cases rely on the payment key for replay protection and on the settlement record.
+
 ## Payment safety
 
 - **Payment timeline per case**, separate from the verdict: `authorized → judged → not_charged | settling →
