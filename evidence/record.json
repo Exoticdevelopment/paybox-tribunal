@@ -112,6 +112,119 @@
       ],
       "judge": "skipped",
       "summary": "Failed 1 contract check(s): price."
+    },
+    {
+      "id": "d101b7c8-4f89-4b9c-9073-be4ef24fb0d4",
+      "service": "invoice",
+      "at": 1792242354106,
+      "contractVersion": "1.0.0",
+      "note": "e2e: honest sample",
+      "caught": false,
+      "rulesHit": [],
+      "judge": "upheld",
+      "summary": "Passed every contract check and the AI judge confirmed the output."
+    },
+    {
+      "id": "eb1220eb-eae7-4540-9217-86b02d509112",
+      "service": "invoice",
+      "at": 1792242354534,
+      "contractVersion": "1.0.0",
+      "note": "e2e: inflated total",
+      "caught": true,
+      "rulesHit": [
+        "total",
+        "grounding"
+      ],
+      "judge": "skipped",
+      "summary": "Failed 2 contract check(s): total, grounding."
+    },
+    {
+      "id": "ea0616bd-4bf0-4ead-b949-493fe6cca69b",
+      "service": "invoice",
+      "at": 1792242354919,
+      "contractVersion": "1.0.0",
+      "note": "e2e: invented vendor",
+      "caught": true,
+      "rulesHit": [
+        "grounding"
+      ],
+      "judge": "skipped",
+      "summary": "Failed 1 contract check(s): grounding."
+    },
+    {
+      "id": "36b1a0f6-06d8-4043-85c7-256ca291e1d5",
+      "service": "summary",
+      "at": 1792242355311,
+      "contractVersion": "1.0.0",
+      "note": "e2e: honest sample",
+      "caught": false,
+      "rulesHit": [],
+      "judge": "upheld",
+      "summary": "Passed every contract check and the AI judge confirmed the output."
+    },
+    {
+      "id": "3f7555a6-c4a8-488f-ae98-07b7fe6e442d",
+      "service": "summary",
+      "at": 1792242355696,
+      "contractVersion": "1.0.0",
+      "note": "e2e: invented number",
+      "caught": true,
+      "rulesHit": [
+        "length",
+        "invented_numbers"
+      ],
+      "judge": "skipped",
+      "summary": "Failed 2 contract check(s): length, invented_numbers."
+    },
+    {
+      "id": "7de8e990-5a72-49a9-ab96-9c0a21559f48",
+      "service": "summary",
+      "at": 1792242356100,
+      "contractVersion": "1.0.0",
+      "note": "e2e: too long",
+      "caught": true,
+      "rulesHit": [
+        "length"
+      ],
+      "judge": "skipped",
+      "summary": "Failed 1 contract check(s): length."
+    },
+    {
+      "id": "21d12f2e-288f-4632-89f5-14e222a8621b",
+      "service": "quote",
+      "at": 1792242356519,
+      "contractVersion": "1.0.0",
+      "note": "e2e: honest sample",
+      "caught": false,
+      "rulesHit": [],
+      "judge": "abstained",
+      "summary": "Passed every contract check."
+    },
+    {
+      "id": "6132b0d1-433a-4f95-949e-f0d3cbedad6c",
+      "service": "quote",
+      "at": 1792242356919,
+      "contractVersion": "1.0.0",
+      "note": "e2e: stale",
+      "caught": true,
+      "rulesHit": [
+        "freshness"
+      ],
+      "judge": "skipped",
+      "summary": "Failed 1 contract check(s): freshness."
+    },
+    {
+      "id": "5469faac-7a1b-4d7f-b8b9-8a84455f0174",
+      "service": "quote",
+      "at": 1792242357330,
+      "contractVersion": "1.0.0",
+      "note": "e2e: zero price",
+      "caught": true,
+      "rulesHit": [
+        "price"
+      ],
+      "judge": "skipped",
+      "summary": "Failed 1 contract check(s): price."
     }
   ],
   "proxies": [],
