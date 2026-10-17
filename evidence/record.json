@@ -24,6 +24,94 @@
       ],
       "judge": "skipped",
       "summary": "Failed 2 contract check(s): total, grounding."
+    },
+    {
+      "id": "96270e86-af9e-493d-9ae3-b81c522e351b",
+      "service": "invoice",
+      "at": 1792242192505,
+      "contractVersion": "1.0.0",
+      "note": "e2e: invented vendor",
+      "caught": true,
+      "rulesHit": [
+        "grounding"
+      ],
+      "judge": "skipped",
+      "summary": "Failed 1 contract check(s): grounding."
+    },
+    {
+      "id": "9fcd7529-53a6-4735-9654-5a42eea33f54",
+      "service": "summary",
+      "at": 1792242192940,
+      "contractVersion": "1.0.0",
+      "note": "e2e: honest sample",
+      "caught": false,
+      "rulesHit": [],
+      "judge": "upheld",
+      "summary": "Passed every contract check and the AI judge confirmed the output."
+    },
+    {
+      "id": "8e5c456b-a40b-4fcb-9554-2e6797782629",
+      "service": "summary",
+      "at": 1792242193348,
+      "contractVersion": "1.0.0",
+      "note": "e2e: invented number",
+      "caught": true,
+      "rulesHit": [
+        "length",
+        "invented_numbers"
+      ],
+      "judge": "skipped",
+      "summary": "Failed 2 contract check(s): length, invented_numbers."
+    },
+    {
+      "id": "9e72a59c-8efb-45c0-a303-c7736d1d6b46",
+      "service": "summary",
+      "at": 1792242193724,
+      "contractVersion": "1.0.0",
+      "note": "e2e: too long",
+      "caught": true,
+      "rulesHit": [
+        "length"
+      ],
+      "judge": "skipped",
+      "summary": "Failed 1 contract check(s): length."
+    },
+    {
+      "id": "774238d7-fd67-40a4-bc51-6e8ea7f2b38f",
+      "service": "quote",
+      "at": 1792242194140,
+      "contractVersion": "1.0.0",
+      "note": "e2e: honest sample",
+      "caught": false,
+      "rulesHit": [],
+      "judge": "abstained",
+      "summary": "Passed every contract check."
+    },
+    {
+      "id": "0d1e0dac-0433-4b77-aeec-c32994d398b5",
+      "service": "quote",
+      "at": 1792242194589,
+      "contractVersion": "1.0.0",
+      "note": "e2e: stale",
+      "caught": true,
+      "rulesHit": [
+        "freshness"
+      ],
+      "judge": "skipped",
+      "summary": "Failed 1 contract check(s): freshness."
+    },
+    {
+      "id": "8255a93a-35f8-45a5-a5f7-be1c7b33296e",
+      "service": "quote",
+      "at": 1792242194998,
+      "contractVersion": "1.0.0",
+      "note": "e2e: zero price",
+      "caught": true,
+      "rulesHit": [
+        "price"
+      ],
+      "judge": "skipped",
+      "summary": "Failed 1 contract check(s): price."
     }
   ],
   "proxies": [],
