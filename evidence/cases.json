@@ -4351,5 +4351,785 @@
       "models": []
     },
     "demoFault": "stale"
+  },
+  {
+    "id": "389f4550-21b3-4ae2-bcbd-df62fee7abf9",
+    "service": "invoice",
+    "createdAt": 1792280618264,
+    "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+    "via": "x402",
+    "paymentKey": "3ad20c1e115dd473afe7f7d4e4b2cd7d82a0904b76b440de97cb5b8965850f79",
+    "payment": {
+      "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+      "key": "3ad20c1e115dd473afe7f7d4e4b2cd7d82a0904b76b440de97cb5b8965850f79",
+      "nonce": "4LanJb7Ze1hpoEt7GXETnVc3TBMyBAkVneuAupNXjKEDJPo4ykZY4PW2LP89AycpuyzV1VXxzCtX9nC7691bej8W",
+      "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "validBefore": 1792280905
+    },
+    "idempotencyKey": null,
+    "response": {
+      "status": 200,
+      "body": "[redacted]"
+    },
+    "events": [
+      {
+        "state": "authorized",
+        "at": 1792280605971,
+        "note": "Payment signature verified by the facilitator. Not settled."
+      },
+      {
+        "state": "judged",
+        "at": 1792280618263,
+        "note": "delivered: Passed every contract check and the AI judge confirmed the output."
+      },
+      {
+        "state": "settling",
+        "at": 1792280618263,
+        "note": "HTTP 200: submitting the payment to the facilitator."
+      },
+      {
+        "state": "settled",
+        "at": 1792280618859,
+        "note": "Settled on-chain: T75GMqvNad23aTKKwvZLx99K6GbyMNsu4EF9P8JgY64WV5GhCY16wv6xkgfKnwuVfNVjNdzjqmwYpSjZvDEMyBy"
+      }
+    ],
+    "input": "[redacted]",
+    "output": "[redacted]",
+    "verdict": {
+      "decision": "delivered",
+      "summary": "Passed every contract check and the AI judge confirmed the output.",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "status": "upheld",
+        "reasoning": "The service successfully extracted all vendor details, line items, and totals accurately without any errors. All fields match the provided invoice text exactly, and numerical values correctly represent the data.",
+        "findings": []
+      },
+      "decidedAt": 1792280618263
+    },
+    "promises": [],
+    "certificate": {
+      "schema": "tribunal.certificate/v1",
+      "case_id": "389f4550-21b3-4ae2-bcbd-df62fee7abf9",
+      "service": "invoice",
+      "contract": {
+        "version": "1.0.0",
+        "hash": "sha256:7e537d972863511ce6b63f9d969a6a7eba5ee23c422b3c874a58b8d67170b49e"
+      },
+      "validator_version": "1.0.0",
+      "input_hash": "sha256:f51de8206861c32eeec3ff5dad9b59a0f6505a340bd92d3f7e3978185c206771",
+      "evaluated_output_hash": "sha256:1bbe289d77bf5d5b2185b8f0836a15c68b08edcc345379fffa204ae98137223b",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "used": true,
+        "status": "upheld"
+      },
+      "decision": "delivered",
+      "reason": "Passed every contract check and the AI judge confirmed the output.",
+      "payment": {
+        "via": "x402",
+        "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+        "ref": "sha256:3ad20c1e115dd473afe7f7d4e4b2cd7d82a0904b76b440de97cb5b8965850f79",
+        "nonce": "4LanJb7Ze1hpoEt7GXETnVc3TBMyBAkVneuAupNXjKEDJPo4ykZY4PW2LP89AycpuyzV1VXxzCtX9nC7691bej8W"
+      },
+      "issued_at": "2026-10-17T23:43:38.263Z"
+    },
+    "signature": "cbPqxqnjK2TlqAtoUqCgoLILgA1CkWADZN6itysZ9n+817FRVGAJ5iK3bdbffI+F1Nl/4K0bs2GiNb65xg/CAQ==",
+    "settlement": {
+      "transaction": "T75GMqvNad23aTKKwvZLx99K6GbyMNsu4EF9P8JgY64WV5GhCY16wv6xkgfKnwuVfNVjNdzjqmwYpSjZvDEMyBy",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "at": 1792280618859
+    },
+    "settlementFailure": null,
+    "appeal": null,
+    "reviewCost": {
+      "calls": 1,
+      "inputTokens": 707,
+      "outputTokens": 59,
+      "usd": 0.000094,
+      "models": [
+        "gemini-flash-lite-latest"
+      ]
+    },
+    "demoFault": null
+  },
+  {
+    "id": "37e610a6-0d1e-4715-9e3f-87bdd211aa6d",
+    "service": "invoice",
+    "createdAt": 1792280633777,
+    "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+    "via": "x402",
+    "paymentKey": "f09ccf2c9b4aa420358030bda9464e2b74409abfe6a48040dbca29017ecfa67b",
+    "payment": {
+      "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+      "key": "f09ccf2c9b4aa420358030bda9464e2b74409abfe6a48040dbca29017ecfa67b",
+      "nonce": "4tsQwkoK135jNsEu7kzPhfX1K2jraPLAXoVTPDwoVfnroPRKeV7db3dfCWWsDU8NfbfYdrtitn958wCd7d9ppXRN",
+      "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "validBefore": 1792280922
+    },
+    "idempotencyKey": null,
+    "response": {
+      "status": 422,
+      "body": "[redacted]"
+    },
+    "events": [
+      {
+        "state": "authorized",
+        "at": 1792280622134,
+        "note": "Payment signature verified by the facilitator. Not settled."
+      },
+      {
+        "state": "judged",
+        "at": 1792280633775,
+        "note": "rejected: AI judge found a breach: Line item 1 description is 'Croissant' with quantity 2 and unit_price 4.50, but the document states 2 x Latte @ 4.50 = 9.00.; Line item 2 description is 'Latte' with quantity 1 and unit_price 3.25, but the document states 1 x Croissant @ 3.25 = 3.25.; Line item 1 is extracted as 'Croissant' with quantity 2 and unit price 4.50, whereas the document states '2 x Latte @ 4.50'.; Line item 2 is extracted as 'Latte' with quantity 1 and unit price 3.25, whereas the document states '1 x Croissant @ 3.25'."
+      },
+      {
+        "state": "not_charged",
+        "at": 1792280633775,
+        "note": "HTTP 422: settlement cancelled. The signed authorization expires unused."
+      }
+    ],
+    "input": "[redacted]",
+    "output": "[redacted]",
+    "verdict": {
+      "decision": "rejected",
+      "summary": "AI judge found a breach: Line item 1 description is 'Croissant' with quantity 2 and unit_price 4.50, but the document states 2 x Latte @ 4.50 = 9.00.; Line item 2 description is 'Latte' with quantity 1 and unit_price 3.25, but the document states 1 x Croissant @ 3.25 = 3.25.; Line item 1 is extracted as 'Croissant' with quantity 2 and unit price 4.50, whereas the document states '2 x Latte @ 4.50'.; Line item 2 is extracted as 'Latte' with quantity 1 and unit price 3.25, whereas the document states '1 x Croissant @ 3.25'.",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "status": "breach",
+        "reasoning": "Two independent reviews agree. The extracted line items have mismatched descriptions, quantities, and unit prices compared to the document. The first line item swaps Latte data into a Croissant description, and vice versa.",
+        "findings": [
+          "Line item 1 description is 'Croissant' with quantity 2 and unit_price 4.50, but the document states 2 x Latte @ 4.50 = 9.00.",
+          "Line item 2 description is 'Latte' with quantity 1 and unit_price 3.25, but the document states 1 x Croissant @ 3.25 = 3.25.",
+          "Line item 1 is extracted as 'Croissant' with quantity 2 and unit price 4.50, whereas the document states '2 x Latte @ 4.50'.",
+          "Line item 2 is extracted as 'Latte' with quantity 1 and unit price 3.25, whereas the document states '1 x Croissant @ 3.25'."
+        ]
+      },
+      "decidedAt": 1792280633775
+    },
+    "promises": [],
+    "certificate": {
+      "schema": "tribunal.certificate/v1",
+      "case_id": "37e610a6-0d1e-4715-9e3f-87bdd211aa6d",
+      "service": "invoice",
+      "contract": {
+        "version": "1.0.0",
+        "hash": "sha256:7e537d972863511ce6b63f9d969a6a7eba5ee23c422b3c874a58b8d67170b49e"
+      },
+      "validator_version": "1.0.0",
+      "input_hash": "sha256:f51de8206861c32eeec3ff5dad9b59a0f6505a340bd92d3f7e3978185c206771",
+      "evaluated_output_hash": "sha256:64eecffd6ac884a9e361c6f678a6a91d61c8eb32393324d5217b2dfe05772e9b",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "used": true,
+        "status": "breach"
+      },
+      "decision": "rejected",
+      "reason": "AI judge found a breach: Line item 1 description is 'Croissant' with quantity 2 and unit_price 4.50, but the document states 2 x Latte @ 4.50 = 9.00.; Line item 2 description is 'Latte' with quantity 1 and unit_price 3.25, but the document states 1 x Croissant @ 3.25 = 3.25.; Line item 1 is extracted as 'Croissant' with quantity 2 and unit price 4.50, whereas the document states '2 x Latte @ 4.50'.; Line item 2 is extracted as 'Latte' with quantity 1 and unit price 3.25, whereas the document states '1 x Croissant @ 3.25'.",
+      "payment": {
+        "via": "x402",
+        "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+        "ref": "sha256:f09ccf2c9b4aa420358030bda9464e2b74409abfe6a48040dbca29017ecfa67b",
+        "nonce": "4tsQwkoK135jNsEu7kzPhfX1K2jraPLAXoVTPDwoVfnroPRKeV7db3dfCWWsDU8NfbfYdrtitn958wCd7d9ppXRN"
+      },
+      "issued_at": "2026-10-17T23:43:53.775Z"
+    },
+    "signature": "61B2gZMAVkvhp2Rmvwi45A6DREgASoq+vnqIX/wUGSWfI57k0pb+gb0BIDJl5hvlJYGKubLrVP44wDkIeu5pAA==",
+    "settlement": null,
+    "settlementFailure": null,
+    "appeal": null,
+    "reviewCost": {
+      "calls": 2,
+      "inputTokens": 1601,
+      "outputTokens": 319,
+      "usd": 0.000288,
+      "models": [
+        "gemini-flash-lite-latest"
+      ]
+    },
+    "demoFault": "swapped_items"
+  },
+  {
+    "id": "5af1d7f6-1438-4b8a-8f28-1807d2d5283c",
+    "service": "summary",
+    "createdAt": 1792280649078,
+    "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+    "via": "x402",
+    "paymentKey": "e49994b32557c6444dd2db141416b0d890e9a7e131413ccc0bb8bcc2fe089ca5",
+    "payment": {
+      "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+      "key": "e49994b32557c6444dd2db141416b0d890e9a7e131413ccc0bb8bcc2fe089ca5",
+      "nonce": "4EMRYCiuLYx3xahCpVCsnoLodar3hNPbpxjMx14UZwiSVuHKTL4AxNxtNVaaUFbsJFShmHvZ88t5Nb7xdkkmCD6R",
+      "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "validBefore": 1792280938
+    },
+    "idempotencyKey": null,
+    "response": {
+      "status": 200,
+      "body": "[redacted]"
+    },
+    "events": [
+      {
+        "state": "authorized",
+        "at": 1792280638168,
+        "note": "Payment signature verified by the facilitator. Not settled."
+      },
+      {
+        "state": "judged",
+        "at": 1792280649076,
+        "note": "delivered: Passed every contract check and the AI judge confirmed the output."
+      },
+      {
+        "state": "settling",
+        "at": 1792280649076,
+        "note": "HTTP 200: submitting the payment to the facilitator."
+      },
+      {
+        "state": "settled",
+        "at": 1792280649724,
+        "note": "Settled on-chain: 4evydxZbixZWmocvqhYf6VcM1cbjr7hLutaSgd6dVgnndmtCbjFr258oW5eAGNfV3We85JzHK3sghyQjTzqmv37a"
+      }
+    ],
+    "input": "[redacted]",
+    "output": "[redacted]",
+    "verdict": {
+      "decision": "delivered",
+      "summary": "Passed every contract check and the AI judge confirmed the output.",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "status": "upheld",
+        "reasoning": "The summary and key points accurately reflect the source text without adding unsupported information or contradictions. Omitted minor phrasing details are acceptable, and all key points directly correspond to statements in the source.",
+        "findings": []
+      },
+      "decidedAt": 1792280649076
+    },
+    "promises": [],
+    "certificate": {
+      "schema": "tribunal.certificate/v1",
+      "case_id": "5af1d7f6-1438-4b8a-8f28-1807d2d5283c",
+      "service": "summary",
+      "contract": {
+        "version": "1.0.0",
+        "hash": "sha256:e509a75b05d60bdf542fa9b9343903886238b3fe205490f5d6edd63f7bf621cf"
+      },
+      "validator_version": "1.0.0",
+      "input_hash": "sha256:daf820decab0dfae3e52c8a501ed3370291831462d68401e6e576ef55e03141b",
+      "evaluated_output_hash": "sha256:fbc66370b1ec15b67e04f334c40f18a08cc0df9e96bcb4f466fc3e10b9d46c4a",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "used": true,
+        "status": "upheld"
+      },
+      "decision": "delivered",
+      "reason": "Passed every contract check and the AI judge confirmed the output.",
+      "payment": {
+        "via": "x402",
+        "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+        "ref": "sha256:e49994b32557c6444dd2db141416b0d890e9a7e131413ccc0bb8bcc2fe089ca5",
+        "nonce": "4EMRYCiuLYx3xahCpVCsnoLodar3hNPbpxjMx14UZwiSVuHKTL4AxNxtNVaaUFbsJFShmHvZ88t5Nb7xdkkmCD6R"
+      },
+      "issued_at": "2026-10-17T23:44:09.076Z"
+    },
+    "signature": "AYtVoyOHARd3bvcfHvtojNwD9MyM/bnK+miBzOTDKAwbepNsGsoLQDl5x/SD99iQajh0ELqKI4wqT9Ijx8X9Ag==",
+    "settlement": {
+      "transaction": "4evydxZbixZWmocvqhYf6VcM1cbjr7hLutaSgd6dVgnndmtCbjFr258oW5eAGNfV3We85JzHK3sghyQjTzqmv37a",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "at": 1792280649724
+    },
+    "settlementFailure": null,
+    "appeal": null,
+    "reviewCost": {
+      "calls": 1,
+      "inputTokens": 529,
+      "outputTokens": 50,
+      "usd": 0.000073,
+      "models": [
+        "gemini-flash-lite-latest"
+      ]
+    },
+    "demoFault": null
+  },
+  {
+    "id": "b22c9b17-83a0-4907-9330-1d62f2756d04",
+    "service": "summary",
+    "createdAt": 1792280653013,
+    "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+    "via": "x402",
+    "paymentKey": "ea899b924d6b672e07a2f5a42812284a24e37199908297d5b9f13e53f3d2576d",
+    "payment": {
+      "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+      "key": "ea899b924d6b672e07a2f5a42812284a24e37199908297d5b9f13e53f3d2576d",
+      "nonce": "3VFRXE9e2wSfo5LNGrcT1LzWNPF8Jcx7cH13kQPsp2m1E9YTqrm1aKeRA2duyUDRXh4xaTQaybuokRC8RQFhYisW",
+      "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "validBefore": 1792280953
+    },
+    "idempotencyKey": null,
+    "response": {
+      "status": 422,
+      "body": "[redacted]"
+    },
+    "events": [
+      {
+        "state": "authorized",
+        "at": 1792280653012,
+        "note": "Payment signature verified by the facilitator. Not settled."
+      },
+      {
+        "state": "judged",
+        "at": 1792280653013,
+        "note": "rejected: Failed 1 contract check(s): invented_numbers."
+      },
+      {
+        "state": "not_charged",
+        "at": 1792280653013,
+        "note": "HTTP 422: settlement cancelled. The signed authorization expires unused."
+      }
+    ],
+    "input": "[redacted]",
+    "output": "[redacted]",
+    "verdict": {
+      "decision": "rejected",
+      "summary": "Failed 1 contract check(s): invented_numbers.",
+      "rules": {
+        "passed": false,
+        "violations": [
+          {
+            "rule": "invented_numbers",
+            "detail": "Numbers not in the source: 47"
+          }
+        ]
+      },
+      "judge": {
+        "status": "skipped",
+        "reasoning": "Rule violations are final; judge not consulted."
+      },
+      "decidedAt": 1792280653013
+    },
+    "promises": [],
+    "certificate": {
+      "schema": "tribunal.certificate/v1",
+      "case_id": "b22c9b17-83a0-4907-9330-1d62f2756d04",
+      "service": "summary",
+      "contract": {
+        "version": "1.0.0",
+        "hash": "sha256:e509a75b05d60bdf542fa9b9343903886238b3fe205490f5d6edd63f7bf621cf"
+      },
+      "validator_version": "1.0.0",
+      "input_hash": "sha256:daf820decab0dfae3e52c8a501ed3370291831462d68401e6e576ef55e03141b",
+      "evaluated_output_hash": "sha256:d4514089f9690f0a0e5b005d72e0bbbde15e8529c351fc86b55b65a918d2bdc7",
+      "rules": {
+        "passed": false,
+        "violations": [
+          {
+            "rule": "invented_numbers",
+            "detail": "Numbers not in the source: 47"
+          }
+        ]
+      },
+      "judge": {
+        "used": false,
+        "status": "skipped"
+      },
+      "decision": "rejected",
+      "reason": "Failed 1 contract check(s): invented_numbers.",
+      "payment": {
+        "via": "x402",
+        "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+        "ref": "sha256:ea899b924d6b672e07a2f5a42812284a24e37199908297d5b9f13e53f3d2576d",
+        "nonce": "3VFRXE9e2wSfo5LNGrcT1LzWNPF8Jcx7cH13kQPsp2m1E9YTqrm1aKeRA2duyUDRXh4xaTQaybuokRC8RQFhYisW"
+      },
+      "issued_at": "2026-10-17T23:44:13.013Z"
+    },
+    "signature": "arxvZE5ju1vJkbdeWF9hq98sMnaETwCOm/ud5QqNs1YAdR+/FVsWosTYq4mN2xyfMPkPNMjdqBPquede/LgcDg==",
+    "settlement": null,
+    "settlementFailure": null,
+    "appeal": null,
+    "reviewCost": {
+      "calls": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "usd": 0,
+      "models": []
+    },
+    "demoFault": "invented_number"
+  },
+  {
+    "id": "ae9e1668-abfd-4e2a-ad24-1e42385205ef",
+    "service": "g-usd-exchange-rates",
+    "createdAt": 1792280656301,
+    "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+    "via": "x402",
+    "paymentKey": "d9db904375f6a70467bcf58e09c3d6439f05a7aad73b3927d2f9ce9c22d29466",
+    "payment": {
+      "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+      "key": "d9db904375f6a70467bcf58e09c3d6439f05a7aad73b3927d2f9ce9c22d29466",
+      "nonce": "5yxJb55TuXEtY1neJxkHVXp4tjRriQd2KFGTx5cDhQFbSmg7NGE6bCjHhQGu6hXLBN2erebhGJN5MvdrwJz73oXp",
+      "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "validBefore": 1792280956
+    },
+    "idempotencyKey": null,
+    "response": {
+      "status": 200,
+      "body": "[redacted]"
+    },
+    "events": [
+      {
+        "state": "authorized",
+        "at": 1792280656212,
+        "note": "Payment signature verified by the facilitator. Not settled."
+      },
+      {
+        "state": "judged",
+        "at": 1792280656301,
+        "note": "delivered: Passed every contract check."
+      },
+      {
+        "state": "settling",
+        "at": 1792280656301,
+        "note": "HTTP 200: submitting the payment to the facilitator."
+      },
+      {
+        "state": "settled",
+        "at": 1792280656767,
+        "note": "Settled on-chain: 5mL53sBB5tkXfCMHN62qUJ2iioAGz6jy9Aj161ks76Y4N9QdNTVFRJdPm6DPpDTBFSnvKJjvLFqDhqeNndTbKqMN"
+      }
+    ],
+    "input": "[redacted]",
+    "output": "[redacted]",
+    "verdict": {
+      "decision": "delivered",
+      "summary": "Passed every contract check.",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "status": "abstained",
+        "reasoning": "This service has no AI judge; rule checks only."
+      },
+      "decidedAt": 1792280656301
+    },
+    "promises": [
+      {
+        "text": "EUR between 0.5 and 1.5",
+        "interpretation": "rates.EUR must be between 0.5 and 1.5",
+        "rule": {
+          "type": "numeric_bounds",
+          "field": "rates.EUR",
+          "min": 0.5,
+          "max": 1.5
+        },
+        "certainty": "deterministic"
+      },
+      {
+        "text": "MXN between 10 and 30",
+        "interpretation": "rates.MXN must be between 10 and 30",
+        "rule": {
+          "type": "numeric_bounds",
+          "field": "rates.MXN",
+          "min": 10,
+          "max": 30
+        },
+        "certainty": "deterministic"
+      },
+      {
+        "text": "BRL between 3 and 10",
+        "interpretation": "rates.BRL must be between 3 and 10",
+        "rule": {
+          "type": "numeric_bounds",
+          "field": "rates.BRL",
+          "min": 3,
+          "max": 10
+        },
+        "certainty": "deterministic"
+      },
+      {
+        "text": "always includes rates",
+        "interpretation": "rates field is required",
+        "rule": {
+          "type": "required_fields",
+          "fields": [
+            "rates"
+          ]
+        },
+        "certainty": "deterministic"
+      }
+    ],
+    "certificate": {
+      "schema": "tribunal.certificate/v1",
+      "case_id": "ae9e1668-abfd-4e2a-ad24-1e42385205ef",
+      "service": "g-usd-exchange-rates",
+      "contract": {
+        "version": "1.1.0",
+        "hash": "sha256:b72072c78e9c59df30d100adf0d0eb87afa067b3ffae433ed4d87ad5a92384fb"
+      },
+      "validator_version": "1.0.0",
+      "input_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "evaluated_output_hash": "sha256:a8bef3c497f9d05baec01c6e8a0be17cb6eb0c0357f3e68f7378a757047604da",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "used": false,
+        "status": "abstained"
+      },
+      "decision": "delivered",
+      "reason": "Passed every contract check.",
+      "payment": {
+        "via": "x402",
+        "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+        "ref": "sha256:d9db904375f6a70467bcf58e09c3d6439f05a7aad73b3927d2f9ce9c22d29466",
+        "nonce": "5yxJb55TuXEtY1neJxkHVXp4tjRriQd2KFGTx5cDhQFbSmg7NGE6bCjHhQGu6hXLBN2erebhGJN5MvdrwJz73oXp"
+      },
+      "issued_at": "2026-10-17T23:44:16.301Z"
+    },
+    "signature": "26n5f8t9zecR4bj2y0lSxUriJQ7g5J1i4qxny0nLU8YdIBPESRonwDmxOIg+u2WriS++Cf+Xe3gHakXjykQ0BQ==",
+    "settlement": {
+      "transaction": "5mL53sBB5tkXfCMHN62qUJ2iioAGz6jy9Aj161ks76Y4N9QdNTVFRJdPm6DPpDTBFSnvKJjvLFqDhqeNndTbKqMN",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "at": 1792280656767
+    },
+    "settlementFailure": null,
+    "appeal": null,
+    "reviewCost": {
+      "calls": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "usd": 0,
+      "models": []
+    },
+    "demoFault": null
+  },
+  {
+    "id": "39b05e5f-a060-4d5b-8ad2-78a97a7de26b",
+    "service": "quote",
+    "createdAt": 1792280660033,
+    "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+    "via": "x402",
+    "paymentKey": "8e2af94103e93078047fefc67ed154c6709e4af20e184c4693428954d96066a6",
+    "payment": {
+      "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+      "key": "8e2af94103e93078047fefc67ed154c6709e4af20e184c4693428954d96066a6",
+      "nonce": "3pqaiiE36XDhiKQeRQUfdiEPFX5Nmp2VNpzHYsvpTB3zeTrCMYqkSbZnAnq9yyD1DunAMGVTWCpecb6vCfn3x7dp",
+      "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "validBefore": 1792280959
+    },
+    "idempotencyKey": null,
+    "response": {
+      "status": 422,
+      "body": "[redacted]"
+    },
+    "events": [
+      {
+        "state": "authorized",
+        "at": 1792280659994,
+        "note": "Payment signature verified by the facilitator. Not settled."
+      },
+      {
+        "state": "judged",
+        "at": 1792280660032,
+        "note": "rejected: Failed 1 contract check(s): freshness."
+      },
+      {
+        "state": "not_charged",
+        "at": 1792280660032,
+        "note": "HTTP 422: settlement cancelled. The signed authorization expires unused."
+      }
+    ],
+    "input": "[redacted]",
+    "output": "[redacted]",
+    "verdict": {
+      "decision": "rejected",
+      "summary": "Failed 1 contract check(s): freshness.",
+      "rules": {
+        "passed": false,
+        "violations": [
+          {
+            "rule": "freshness",
+            "detail": "as_of is 600s in the future"
+          }
+        ]
+      },
+      "judge": {
+        "status": "skipped",
+        "reasoning": "Rule violations are final; judge not consulted."
+      },
+      "decidedAt": 1792280660032
+    },
+    "promises": [],
+    "certificate": {
+      "schema": "tribunal.certificate/v1",
+      "case_id": "39b05e5f-a060-4d5b-8ad2-78a97a7de26b",
+      "service": "quote",
+      "contract": {
+        "version": "1.0.0",
+        "hash": "sha256:96be6c693284a9075cb0297f34330223b50c178ab21e081db4b5b5a1e0b0b84a"
+      },
+      "validator_version": "1.0.0",
+      "input_hash": "sha256:09442f3998b08c0f258e790f577db5864960ea8e53f61a73e78763bf945a3176",
+      "evaluated_output_hash": "sha256:2fcebcd41aec70a1367e29ef04cfc7c12ad3968927691d9d2ed670822843765e",
+      "rules": {
+        "passed": false,
+        "violations": [
+          {
+            "rule": "freshness",
+            "detail": "as_of is 600s in the future"
+          }
+        ]
+      },
+      "judge": {
+        "used": false,
+        "status": "skipped"
+      },
+      "decision": "rejected",
+      "reason": "Failed 1 contract check(s): freshness.",
+      "payment": {
+        "via": "x402",
+        "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+        "ref": "sha256:8e2af94103e93078047fefc67ed154c6709e4af20e184c4693428954d96066a6",
+        "nonce": "3pqaiiE36XDhiKQeRQUfdiEPFX5Nmp2VNpzHYsvpTB3zeTrCMYqkSbZnAnq9yyD1DunAMGVTWCpecb6vCfn3x7dp"
+      },
+      "issued_at": "2026-10-17T23:44:20.032Z"
+    },
+    "signature": "M/tC0EcaNBulRL+lqK40r2sJ4sGPx6Jfwk77SdtNJVtZ3vhuZrntpW1DCFDn+o2qHeXYs2jYTEuSL65lmYGDBw==",
+    "settlement": null,
+    "settlementFailure": null,
+    "appeal": null,
+    "reviewCost": {
+      "calls": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "usd": 0,
+      "models": []
+    },
+    "demoFault": "future_timestamp"
+  },
+  {
+    "id": "f7f91f3b-0aeb-4d0d-bac5-7afd348a1be8",
+    "service": "quote",
+    "createdAt": 1792280663209,
+    "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+    "via": "x402",
+    "paymentKey": "50c2dfa6ce29c48af2c85a444d807fae0cca39cec856a4dd4e1749d12fd29779",
+    "payment": {
+      "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+      "key": "50c2dfa6ce29c48af2c85a444d807fae0cca39cec856a4dd4e1749d12fd29779",
+      "nonce": "3afo1oFX2gocUChVqBAk2uWYPSjHPbKkgFn9kc5XTeBwk2QhbmWkNwuBQD3t47iMV74Uf7XoFY3m8yhkTkothdqk",
+      "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "validBefore": 1792280963
+    },
+    "idempotencyKey": null,
+    "response": {
+      "status": 200,
+      "body": "[redacted]"
+    },
+    "events": [
+      {
+        "state": "authorized",
+        "at": 1792280663174,
+        "note": "Payment signature verified by the facilitator. Not settled."
+      },
+      {
+        "state": "judged",
+        "at": 1792280663208,
+        "note": "delivered: Passed every contract check."
+      },
+      {
+        "state": "settling",
+        "at": 1792280663208,
+        "note": "HTTP 200: submitting the payment to the facilitator."
+      },
+      {
+        "state": "settled",
+        "at": 1792280663881,
+        "note": "Settled on-chain: 3pgKJXZ8BhPV2oJvMxqt9f5TmyA3HWC2HEbtvEHviqGhzKSKvBmskYphAVGFVmiWuGB5gKLPeEBM2To63QWFxju4"
+      }
+    ],
+    "input": "[redacted]",
+    "output": "[redacted]",
+    "verdict": {
+      "decision": "delivered",
+      "summary": "Passed every contract check.",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "status": "abstained",
+        "reasoning": "This service has no AI judge; rule checks only."
+      },
+      "decidedAt": 1792280663208
+    },
+    "promises": [],
+    "certificate": {
+      "schema": "tribunal.certificate/v1",
+      "case_id": "f7f91f3b-0aeb-4d0d-bac5-7afd348a1be8",
+      "service": "quote",
+      "contract": {
+        "version": "1.0.0",
+        "hash": "sha256:96be6c693284a9075cb0297f34330223b50c178ab21e081db4b5b5a1e0b0b84a"
+      },
+      "validator_version": "1.0.0",
+      "input_hash": "sha256:09442f3998b08c0f258e790f577db5864960ea8e53f61a73e78763bf945a3176",
+      "evaluated_output_hash": "sha256:a8f3bcd2e47b764394a5be8a105413f890fdab769b26945a02825510f408cb36",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "used": false,
+        "status": "abstained"
+      },
+      "decision": "delivered",
+      "reason": "Passed every contract check.",
+      "payment": {
+        "via": "x402",
+        "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+        "ref": "sha256:50c2dfa6ce29c48af2c85a444d807fae0cca39cec856a4dd4e1749d12fd29779",
+        "nonce": "3afo1oFX2gocUChVqBAk2uWYPSjHPbKkgFn9kc5XTeBwk2QhbmWkNwuBQD3t47iMV74Uf7XoFY3m8yhkTkothdqk"
+      },
+      "issued_at": "2026-10-17T23:44:23.208Z"
+    },
+    "signature": "Qtl7wkCSUjF5gO2ZLXpdK2jSw56UWxzwkMfUfr0ptnVQfuAwf3KIY/jt8Op3sXyl5bAdZFqXeLsLp4HfzYYEAg==",
+    "settlement": {
+      "transaction": "3pgKJXZ8BhPV2oJvMxqt9f5TmyA3HWC2HEbtvEHviqGhzKSKvBmskYphAVGFVmiWuGB5gKLPeEBM2To63QWFxju4",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "at": 1792280663881
+    },
+    "settlementFailure": null,
+    "appeal": null,
+    "reviewCost": {
+      "calls": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "usd": 0,
+      "models": []
+    },
+    "demoFault": null
   }
 ]
