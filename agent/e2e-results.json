@@ -1,8 +1,8 @@
 {
-  "at": "2026-10-17T13:03:17.619Z",
+  "at": "2026-10-17T13:11:28.898Z",
   "server": "https://paybox-tribunal.onrender.com",
-  "passed": 27,
-  "total": 31,
+  "passed": 37,
+  "total": 37,
   "results": [
     {
       "n": 1,
@@ -43,15 +43,15 @@
       "n": 6,
       "area": "Pages",
       "check": "AI backend answers",
-      "ok": false,
-      "detail": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+      "ok": true,
+      "detail": "gemini · gemini-flash-latest · 5705 ms"
     },
     {
       "n": 7,
       "area": "Compiler",
       "check": "English, mixed certainty",
-      "ok": false,
-      "detail": "Cannot read properties of undefined (reading 'some')"
+      "ok": true,
+      "detail": "ai · deterministic, deterministic + refused \"funny\""
     },
     {
       "n": 8,
@@ -64,15 +64,15 @@
       "n": 9,
       "area": "Compiler",
       "check": "Only subjective promises",
-      "ok": false,
-      "detail": "Cannot read properties of undefined (reading 'length')"
+      "ok": true,
+      "detail": "ai · 0 rules, 1 refused"
     },
     {
       "n": 10,
       "area": "Compiler",
       "check": "Promise about a field the service doesn't have",
-      "ok": false,
-      "detail": "Cannot read properties of undefined (reading 'length')"
+      "ok": true,
+      "detail": "ai · no rule invented (1 refused, 0 other)"
     },
     {
       "n": 11,
@@ -220,6 +220,48 @@
       "check": "No buyer ever paid for a broken promise",
       "ok": true,
       "detail": "14 judged · 7 refused before charge · 0 charged failures"
+    },
+    {
+      "n": 32,
+      "area": "Paid",
+      "check": "Quote that keeps its promise → 200, settled on Solana",
+      "ok": true,
+      "detail": "SOL $103.98 · tx 48NQso2GNn…"
+    },
+    {
+      "n": 33,
+      "area": "Paid",
+      "check": "Stale quote → 422, never settled",
+      "ok": true,
+      "detail": "case 3afb5de0 · charged: false"
+    },
+    {
+      "n": 34,
+      "area": "Paid",
+      "check": "Invoice with a required field missing → 422",
+      "ok": true,
+      "detail": "schema"
+    },
+    {
+      "n": 35,
+      "area": "Paid",
+      "check": "Summary with an unsupported claim → rejected",
+      "ok": true,
+      "detail": "AI judge: breach"
+    },
+    {
+      "n": 36,
+      "area": "Paid",
+      "check": "Appeal with a baseless complaint is not rewarded",
+      "ok": true,
+      "detail": "ruling: upheld, no credit"
+    },
+    {
+      "n": 37,
+      "area": "Paid",
+      "check": "On-chain audit proves the rejected Solana payment never moved",
+      "ok": true,
+      "detail": "Audited on-chain: the signed payment expired unused. This buyer can never be charged for it."
     }
   ]
 }
