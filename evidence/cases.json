@@ -4035,5 +4035,112 @@
     },
     "settlementFailure": null,
     "appeal": null
+  },
+  {
+    "id": "14d35991-7483-4d07-acb5-7b3b952410e5",
+    "service": "summary",
+    "createdAt": 1792269398461,
+    "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+    "via": "x402",
+    "paymentKey": "371bd8c845e58fc049aabb2b89a65f7353ba92688aa44f9ae3207fb449b6c7aa",
+    "payment": {
+      "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+      "key": "371bd8c845e58fc049aabb2b89a65f7353ba92688aa44f9ae3207fb449b6c7aa",
+      "nonce": "312zM56Vh2RUeD1S26jvXnM7sarAbYLuEc2dWXxsxLnhVxZ4RQgcBStwyJCFKDT1dfdhorG1RGC8JCKsDSDiktkL",
+      "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "validBefore": 1792269686
+    },
+    "idempotencyKey": null,
+    "response": {
+      "status": 200,
+      "body": "[redacted]"
+    },
+    "events": [
+      {
+        "state": "authorized",
+        "at": 1792269386448,
+        "note": "Payment signature verified by the facilitator. Not settled."
+      },
+      {
+        "state": "judged",
+        "at": 1792269398460,
+        "note": "delivered: Passed every contract check and the AI judge confirmed the output."
+      },
+      {
+        "state": "settling",
+        "at": 1792269398460,
+        "note": "HTTP 200: submitting the payment to the facilitator."
+      },
+      {
+        "state": "settled",
+        "at": 1792269399034,
+        "note": "Settled on-chain: 4WjR8h5Jtd7RyMorj2VbXkMaadC5YaJZH8LHNEvtXSqqjF4L5BnRA6X6uo6z5gS23PY7aa9eSDHm2ne3Eex46wV8"
+      }
+    ],
+    "input": "[redacted]",
+    "output": "[redacted]",
+    "verdict": {
+      "decision": "delivered",
+      "summary": "Passed every contract check and the AI judge confirmed the output.",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "status": "upheld",
+        "reasoning": "The summary and key points accurately reflect the source text without introducing any unsupported claims, contradictions, or hallucinations. All details regarding MoonPay, July 2026, non-custodial payment vault features, passkey requirements, and x402 support are fully substantiated by the source text.",
+        "findings": []
+      },
+      "decidedAt": 1792269398460
+    },
+    "promises": [],
+    "certificate": {
+      "schema": "tribunal.certificate/v1",
+      "case_id": "14d35991-7483-4d07-acb5-7b3b952410e5",
+      "service": "summary",
+      "contract": {
+        "version": "1.0.0",
+        "hash": "sha256:e509a75b05d60bdf542fa9b9343903886238b3fe205490f5d6edd63f7bf621cf"
+      },
+      "validator_version": "1.0.0",
+      "input_hash": "sha256:e489e11d35e1ae3fed551e5927f7c73936e80bcb07fbede9950b9f98c0a5a223",
+      "evaluated_output_hash": "sha256:ab85cfb20da41132a24c71bdff9ab79a06988d5a44d4414c391ec0a2c293f2df",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "used": true,
+        "status": "upheld"
+      },
+      "decision": "delivered",
+      "reason": "Passed every contract check and the AI judge confirmed the output.",
+      "payment": {
+        "via": "x402",
+        "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+        "ref": "sha256:371bd8c845e58fc049aabb2b89a65f7353ba92688aa44f9ae3207fb449b6c7aa",
+        "nonce": "312zM56Vh2RUeD1S26jvXnM7sarAbYLuEc2dWXxsxLnhVxZ4RQgcBStwyJCFKDT1dfdhorG1RGC8JCKsDSDiktkL"
+      },
+      "issued_at": "2026-10-17T20:36:38.460Z"
+    },
+    "signature": "Q+9m2I6yUzxLgP3HDbiI25AUZP5uEO8eBAkgQMFU3DJ7im9MZx0xOXHjWvfXE8JAGXdn+0ZnDzLFc+R20mZSDg==",
+    "settlement": {
+      "transaction": "4WjR8h5Jtd7RyMorj2VbXkMaadC5YaJZH8LHNEvtXSqqjF4L5BnRA6X6uo6z5gS23PY7aa9eSDHm2ne3Eex46wV8",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "at": 1792269399034
+    },
+    "settlementFailure": null,
+    "appeal": null,
+    "reviewCost": {
+      "calls": 1,
+      "inputTokens": 597,
+      "outputTokens": 84,
+      "usd": 0.000093,
+      "models": [
+        "gemini-flash-lite-latest"
+      ]
+    },
+    "demoFault": null
   }
 ]
