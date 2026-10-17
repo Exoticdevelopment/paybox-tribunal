@@ -5131,5 +5131,107 @@
       "models": []
     },
     "demoFault": null
+  },
+  {
+    "id": "edc2a88b-568d-4453-9229-3791adb5c87f",
+    "service": "summary",
+    "createdAt": 1792280678283,
+    "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+    "via": "x402",
+    "paymentKey": "e0243ee0894ac8e80fa22ebfb89eb48f67287d4bf404118b8314001326d613d7",
+    "payment": {
+      "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+      "key": "e0243ee0894ac8e80fa22ebfb89eb48f67287d4bf404118b8314001326d613d7",
+      "nonce": "2qFCPeE8xTT1mL8BRMCB5Cw4a8szWybhuJCiDVcbAX1FECcXd1UCbzpwgxpkeETUQaBf7h46fcMdgiMLja6bsR6s",
+      "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "validBefore": 1792280967
+    },
+    "idempotencyKey": null,
+    "response": {
+      "status": 422,
+      "body": "[redacted]"
+    },
+    "events": [
+      {
+        "state": "authorized",
+        "at": 1792280667039,
+        "note": "Payment signature verified by the facilitator. Not settled."
+      },
+      {
+        "state": "judged",
+        "at": 1792280678282,
+        "note": "rejected: AI judge found a breach: The summary states 'The project was later acquired by a large bank.'; The source text contains no information regarding any acquisition by a large bank.; The summary includes the claim: 'The project was later acquired by a large bank.'"
+      },
+      {
+        "state": "not_charged",
+        "at": 1792280678282,
+        "note": "HTTP 422: settlement cancelled. The signed authorization expires unused."
+      }
+    ],
+    "input": "[redacted]",
+    "output": "[redacted]",
+    "verdict": {
+      "decision": "rejected",
+      "summary": "AI judge found a breach: The summary states 'The project was later acquired by a large bank.'; The source text contains no information regarding any acquisition by a large bank.; The summary includes the claim: 'The project was later acquired by a large bank.'",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "status": "breach",
+        "reasoning": "Two independent reviews agree. The service promised a faithful summary, but the output introduces a factual claim about an acquisition that is entirely unsupported by the source text. This constitutes a hallucination that contradicts the rule against stating things the source text does not support.",
+        "findings": [
+          "The summary states 'The project was later acquired by a large bank.'",
+          "The source text contains no information regarding any acquisition by a large bank.",
+          "The summary includes the claim: 'The project was later acquired by a large bank.'"
+        ]
+      },
+      "decidedAt": 1792280678282
+    },
+    "promises": [],
+    "certificate": {
+      "schema": "tribunal.certificate/v1",
+      "case_id": "edc2a88b-568d-4453-9229-3791adb5c87f",
+      "service": "summary",
+      "contract": {
+        "version": "1.0.0",
+        "hash": "sha256:e509a75b05d60bdf542fa9b9343903886238b3fe205490f5d6edd63f7bf621cf"
+      },
+      "validator_version": "1.0.0",
+      "input_hash": "sha256:daf820decab0dfae3e52c8a501ed3370291831462d68401e6e576ef55e03141b",
+      "evaluated_output_hash": "sha256:0cfc2e4d8541409cdd82f780d6426541fe0b752a72035dffd5d708150d2940ba",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "used": true,
+        "status": "breach"
+      },
+      "decision": "rejected",
+      "reason": "AI judge found a breach: The summary states 'The project was later acquired by a large bank.'; The source text contains no information regarding any acquisition by a large bank.; The summary includes the claim: 'The project was later acquired by a large bank.'",
+      "payment": {
+        "via": "x402",
+        "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+        "ref": "sha256:e0243ee0894ac8e80fa22ebfb89eb48f67287d4bf404118b8314001326d613d7",
+        "nonce": "2qFCPeE8xTT1mL8BRMCB5Cw4a8szWybhuJCiDVcbAX1FECcXd1UCbzpwgxpkeETUQaBf7h46fcMdgiMLja6bsR6s"
+      },
+      "issued_at": "2026-10-17T23:44:38.282Z"
+    },
+    "signature": "D6dU7wHQf/MxFCJ45ZxCcAP+2iCHoSj4ff+idIkO4kjf5G8BOWMhCbdLozdAHv1Ly+Eo2Mop2gvSPjHtV+9kDQ==",
+    "settlement": null,
+    "settlementFailure": null,
+    "appeal": null,
+    "reviewCost": {
+      "calls": 2,
+      "inputTokens": 1202,
+      "outputTokens": 232,
+      "usd": 0.000213,
+      "models": [
+        "gemini-flash-lite-latest"
+      ]
+    },
+    "demoFault": "unsupported_claim"
   }
 ]
