@@ -148,6 +148,15 @@ checks balances on-chain. **8/8 checks pass** ([full report](docs/testnet-report
   recorded `settle_failed` (separate from the passing verdict), the buyer kept their money, and an on-chain
   read of `authorizationState` confirmed the nonce was never used ([x402#1062](https://github.com/x402-foundation/x402/issues/1062)).
 
+**With real money, through PayBox, on Solana mainnet (Oct 17, 2026).** A PayBox wallet paid Tribunal through
+PayBox's own x402 gateway (`use_service`), approved in the PayBox signing window:
+
+- **Price quote, promise kept:** HTTP 200, **settled on Solana mainnet**
+  ([tx](https://solscan.io/tx/iQUR6yw9cFUULva267JKWwQokrUWFwxvLFLjENr3dJnHdCyJMM8JyrwWsF5uC9aKgUibnfz6bYfYt7WGnrdwC2q)),
+  seller +0.01 USDC. Timeline: authorized → judged → settling → settled.
+- **Price quote, promise broken:** the service returned no quote. HTTP 422, rule `non_empty` failed,
+  **never settled**: the seller's USDC balance did not move, and PayBox reported no money left the wallet.
+
 ## Two payment rails: Base and Solana
 
 USDC on **Base** is the primary rail. Set `PAY_TO_SOLANA` and every paid route also offers **USDC on Solana**
