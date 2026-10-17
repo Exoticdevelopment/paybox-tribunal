@@ -1742,5 +1742,111 @@
     "settlement": null,
     "settlementFailure": null,
     "appeal": null
+  },
+  {
+    "id": "c3b22c5d-b68e-4521-90d6-1d6abdf5f0d0",
+    "service": "summary",
+    "createdAt": 1792242411646,
+    "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+    "via": "x402",
+    "paymentKey": "d683c1cc74d5bab29864d24c13103c4bc5a7ee08e90627a13f060f134b43d46a",
+    "payment": {
+      "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+      "key": "d683c1cc74d5bab29864d24c13103c4bc5a7ee08e90627a13f060f134b43d46a",
+      "nonce": "4fBbcLCVhba8F8ZNvwSPwUpLK8aVEc3TZdD8k6kdaZK4kuZM2TGvGHq3tdDS5GVKfjJhtzAPBwVdn1ziyCGGojkW",
+      "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "validBefore": 1792242703
+    },
+    "idempotencyKey": null,
+    "response": {
+      "status": 200,
+      "body": "[redacted]"
+    },
+    "events": [
+      {
+        "state": "authorized",
+        "at": 1792242403472,
+        "note": "Payment signature verified by the facilitator. Not settled."
+      },
+      {
+        "state": "judged",
+        "at": 1792242411646,
+        "note": "delivered: Passed every contract check and the AI judge confirmed the output."
+      },
+      {
+        "state": "settling",
+        "at": 1792242411646,
+        "note": "HTTP 200: submitting the payment to the facilitator."
+      },
+      {
+        "state": "settled",
+        "at": 1792242412343,
+        "note": "Settled on-chain: 5WNocKCwNajz3yrwvCMPaKWyws7drwkH5KonoWSeGDyMpD4XPnnvXaxtUdeN3mbq22QryWM7zNHS9jWCCm5kDCc3"
+      }
+    ],
+    "input": "[redacted]",
+    "output": "[redacted]",
+    "verdict": {
+      "decision": "delivered",
+      "summary": "Passed every contract check and the AI judge confirmed the output.",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "status": "upheld",
+        "reasoning": "The summary and key points accurately reflect the source text without introducing any unsupported claims, fabrications, or contradictions. Omitted details are minor and paraphrasing is faithful to the original description of PayBox.",
+        "findings": []
+      },
+      "decidedAt": 1792242411646
+    },
+    "promises": [],
+    "certificate": {
+      "schema": "tribunal.certificate/v1",
+      "case_id": "c3b22c5d-b68e-4521-90d6-1d6abdf5f0d0",
+      "service": "summary",
+      "contract": {
+        "version": "1.0.0",
+        "hash": "sha256:e509a75b05d60bdf542fa9b9343903886238b3fe205490f5d6edd63f7bf621cf"
+      },
+      "validator_version": "1.0.0",
+      "input_hash": "sha256:e489e11d35e1ae3fed551e5927f7c73936e80bcb07fbede9950b9f98c0a5a223",
+      "evaluated_output_hash": "sha256:2c56161db76af09a76ee1f94dde54d04ab4a30652893c8c75c47f581e7d0de80",
+      "rules": {
+        "passed": true,
+        "violations": []
+      },
+      "judge": {
+        "used": true,
+        "status": "upheld"
+      },
+      "decision": "delivered",
+      "reason": "Passed every contract check and the AI judge confirmed the output.",
+      "payment": {
+        "via": "x402",
+        "payer": "HjWKYL4iDtdPgJyiKkCZnrsBY56JUX45qLnoQMWpyrSV",
+        "ref": "sha256:d683c1cc74d5bab29864d24c13103c4bc5a7ee08e90627a13f060f134b43d46a",
+        "nonce": "4fBbcLCVhba8F8ZNvwSPwUpLK8aVEc3TZdD8k6kdaZK4kuZM2TGvGHq3tdDS5GVKfjJhtzAPBwVdn1ziyCGGojkW"
+      },
+      "issued_at": "2026-10-17T13:06:51.646Z"
+    },
+    "signature": "wU/FeqK9o8PmiugCtX1qM90HuWGKbAmxKvOLhfbVOLeETBHe95Ku8PUyCNVzbCU6jQsLuOXjPJ3u2zm96fdJBA==",
+    "settlement": {
+      "transaction": "5WNocKCwNajz3yrwvCMPaKWyws7drwkH5KonoWSeGDyMpD4XPnnvXaxtUdeN3mbq22QryWM7zNHS9jWCCm5kDCc3",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "at": 1792242412343
+    },
+    "settlementFailure": null,
+    "appeal": {
+      "filedAt": 1792242418379,
+      "complaint": "I just want my money back, the summary is fine but I changed my mind.",
+      "ruling": {
+        "status": "upheld",
+        "reasoning": "The summary accurately reflects the source text without introducing unsupported claims, contradictions, or hallucinations. The buyer's complaint merely states a change of mind rather than an actual service breach.",
+        "findings": []
+      },
+      "voucherId": null
+    }
   }
 ]
