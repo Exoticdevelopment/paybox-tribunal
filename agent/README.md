@@ -13,5 +13,9 @@ npx paybox connect   # pair a signing key (match the eight emoji in the PayBox a
 npm run demo         # scenario 1: promise kept → charged $0.01; scenario 2: broken promise → 422, $0
 ```
 
+**Through the PayBox plugin** (`npm run plugin`): the agent discovers PayBox Tribunal with `discover_plugins`, checks the
+guarantee with `check_guarantee`, buys through `get_price_quote` (the plugin proposes the x402 payment, PayBox prepares it,
+the paired key signs it), and verifies both signed verdicts with `get_case`, inside the plugin.
+
 `PAY_ON=evm` pays with USDC on Base instead of Solana. `MIN_TRUST=0.5` makes the agent refuse sellers below
 that trust score. `TRIBUNAL_URL` points it at another Tribunal server.

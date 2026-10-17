@@ -8,7 +8,8 @@
     "broken": "node buyer.ts broken",
     "login": "paybox login",
     "connect": "paybox connect",
-    "suite": "node buyer.ts suite"
+    "suite": "node buyer.ts suite",
+    "plugin": "node plugin-agent.ts"
   },
   "author": "",
   "license": "ISC",
