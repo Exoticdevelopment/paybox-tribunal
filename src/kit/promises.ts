@@ -104,7 +104,8 @@ export function checkAgainstSchemas(rule: RuleSpec, inputSchema: unknown, output
 
 // ---------- Evaluation ----------
 
-const isEmpty = (v: unknown) => v === undefined || v === null || v === "" || (Array.isArray(v) && v.length === 0);
+const isEmpty = (v: unknown) =>
+  v === undefined || v === null || v === "" || (Array.isArray(v) && v.length === 0) || (typeof v === "object" && !Array.isArray(v) && Object.keys(v).length === 0);
 
 const STOPWORDS: Record<"es" | "en" | "pt" | "fr", string[]> = {
   es: ["el", "la", "los", "las", "de", "que", "y", "en", "un", "una", "es", "por", "con", "para", "del", "se", "su", "al", "como", "más"],

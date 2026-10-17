@@ -562,9 +562,12 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
 
     let sampleOutput: unknown;
     try {
-      sampleOutput = await callUpstream({ url, method }, sample, allowLocalUpstream);
+      sampleOutput = await callUpstream({ url, method }, sample, allowLocalUpstream, true);
     } catch (error) {
-      return c.json({ error: "unsafe_or_unreachable_url", detail: error instanceof Error ? error.message : String(error) }, 400);
+      const detail = error instanceof Error ? error.message : String(error);
+      // The API answered, but not usefully (status, size, not JSON): 422. Unsafe or unreachable URL: 400.
+      if (detail.startsWith("The API")) return c.json({ error: "upstream_failed", detail }, 422);
+      return c.json({ error: "unsafe_or_unreachable_url", detail }, 400);
     }
     if (sampleOutput === null || sampleOutput === undefined) {
       return c.json({ error: "upstream_failed", detail: "The API did not answer with JSON (2xx, under 8s and 256 KB)." }, 422);

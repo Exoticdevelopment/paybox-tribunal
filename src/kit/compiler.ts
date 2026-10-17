@@ -122,7 +122,9 @@ export function leaves(schema: unknown, prefix = ""): Leaf[] {
   const node = schema as Record<string, unknown> | undefined;
   if (!node) return [];
   if (node.type === "object" && node.properties) {
-    return Object.entries(node.properties as Record<string, unknown>).flatMap(([k, v]) => leaves(v, prefix ? `${prefix}.${k}` : k));
+    const children = Object.entries(node.properties as Record<string, unknown>).flatMap(([k, v]) => leaves(v, prefix ? `${prefix}.${k}` : k));
+    // A nested object is a field too ("always includes rates"), not just its leaves.
+    return prefix ? [{ path: prefix, type: "object" }, ...children] : children;
   }
   if (node.type === "array") {
     const items = node.items as Record<string, unknown> | undefined;
@@ -181,7 +183,8 @@ export function compileWithRules(text: string, schemas: Schemas): Draft[] {
     strings.find((s) => /summary|text|description|translation|content/.test(s.path) && !s.path.includes("[]")) ?? strings[0];
 
   const clauses = text
-    .split(/[.;\n]+|,\s*(?=(?:no |nunca |siempre |m[aá]ximo |debe |en |con |sin |always |never |at most |must |with |without |and never |[a-z0-9_]+ (?:entre|between) ))/i)
+    // A period ends a clause unless it's a decimal point ("between 0.5 and 1.5").
+    .split(/(?<!\d)\.(?!\d)|[;\n]+|,\s*(?=(?:no |nunca |siempre |m[aá]ximo |debe |en |con |sin |always |never |at most |must |with |without |and never |[a-z0-9_]+ (?:entre|between) ))/i)
     .map((c) => c.trim())
     .filter((c) => c.length > 2);
 

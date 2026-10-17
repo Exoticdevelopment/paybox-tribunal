@@ -295,11 +295,11 @@
     <div class="tool">
       <div>
         <label class="field" for="g-title">Name</label>
-        <input type="text" id="g-title" value="Clima Bogota">
+        <input type="text" id="g-title" value="USD exchange rates">
         <label class="field" for="g-url" style="margin-top:16px">Your API (public HTTPS, returns JSON)</label>
-        <input type="text" id="g-url" value="https://api.open-meteo.com/v1/forecast?latitude=4.71&amp;longitude=-74.07&amp;current=temperature_2m,wind_speed_10m&amp;timezone=UTC">
+        <input type="text" id="g-url" value="https://api.frankfurter.dev/v1/latest?base=USD&amp;symbols=EUR,MXN,BRL">
         <label class="field" for="g-promise" style="margin-top:16px">Your promise</label>
-        <textarea id="g-promise" rows="3">temperature_2m between -30 and 50, wind_speed_10m between 0 and 200, always includes temperature_2m</textarea>
+        <textarea id="g-promise" rows="3">EUR between 0.5 and 1.5, MXN between 10 and 30, BRL between 3 and 10, always includes rates</textarea>
         <div class="row">
           <button class="btn btn-primary" id="g-go">Compile &amp; crash-test</button>
           <button class="btn btn-secondary" id="g-activate" disabled>Confirm &amp; go live</button>

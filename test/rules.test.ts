@@ -89,3 +89,16 @@ test("wilson lower bound rewards volume", () => {
   assert.ok(wilsonLowerBound(3, 3) < wilsonLowerBound(300, 300));
   assert.ok(wilsonLowerBound(300, 300) > 0.98);
 });
+
+test("rule parser: decimals don't split clauses, and nested objects are fields", async () => {
+  const { compileWithRules } = await import("../src/kit/compiler.ts");
+  const output = {
+    type: "object",
+    properties: { base: { type: "string" }, rates: { type: "object", properties: { EUR: { type: "number" }, MXN: { type: "number" } } } },
+  };
+  const drafts = compileWithRules("EUR between 0.5 and 1.5, MXN between 10 and 30, always includes rates", { input: { type: "object", properties: {} }, output });
+  const rules = drafts.map((d) => ("rule" in d ? d.rule : null));
+  assert.deepEqual(rules[0], { type: "numeric_bounds", field: "rates.EUR", min: 0.5, max: 1.5 });
+  assert.deepEqual(rules[2], { type: "required_fields", fields: ["rates"] });
+  assert.equal(drafts.length, 3);
+});

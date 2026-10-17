@@ -92,7 +92,15 @@ export async function assertPublicUrl(raw: string, allowLocal: boolean): Promise
 }
 
 /** Calls the upstream API once. Returns parsed JSON, or null for any failure (which the tribunal then rejects). */
-export async function callUpstream(def: Pick<ProxyDef, "url" | "method">, input: ProxyInput, allowLocal: boolean): Promise<unknown> {
+/**
+ * Calls the seller's API once. Returns null on any failure (the tribunal then rejects and nobody pays),
+ * or, with explain=true (when registering an API), throws a readable reason instead.
+ */
+export async function callUpstream(def: Pick<ProxyDef, "url" | "method">, input: ProxyInput, allowLocal: boolean, explain = false): Promise<unknown> {
+  const fail = (reason: string) => {
+    if (explain) throw new Error(reason);
+    return null;
+  };
   const url = await assertPublicUrl(def.url, allowLocal);
   for (const [k, v] of Object.entries(input.query ?? {})) url.searchParams.set(k, v);
   const res = await fetch(url, {
@@ -102,13 +110,14 @@ export async function callUpstream(def: Pick<ProxyDef, "url" | "method">, input:
     headers: { accept: "application/json", ...(def.method === "POST" ? { "content-type": "application/json" } : {}) },
     body: def.method === "POST" ? JSON.stringify(input.body ?? {}) : undefined,
   });
-  if (!res.ok) return null;
+  if (res.status >= 300 && res.status < 400) return fail(`The API answered with a redirect (${res.status}); use the final URL.`);
+  if (!res.ok) return fail(`The API answered HTTP ${res.status}${res.status === 429 ? " (rate limited: it may block shared cloud servers)" : ""}.`);
   const text = await res.text();
-  if (text.length > MAX_BYTES) return null;
+  if (text.length > MAX_BYTES) return fail("The API answered more than 256 KB.");
   try {
     return JSON.parse(text);
   } catch {
-    return null;
+    return fail("The API did not answer with JSON.");
   }
 }
 
