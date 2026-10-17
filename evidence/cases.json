@@ -1493,6 +1493,11 @@
         "state": "not_charged",
         "at": 1792242367787,
         "note": "HTTP 422: settlement cancelled. The signed authorization expires unused."
+      },
+      {
+        "state": "expired_unsettled",
+        "at": 1792242686813,
+        "note": "Audited on-chain: the signed payment expired unused. This buyer can never be charged for it."
       }
     ],
     "input": "[redacted]",
@@ -1590,6 +1595,11 @@
         "state": "not_charged",
         "at": 1792242375401,
         "note": "HTTP 422: settlement cancelled. The signed authorization expires unused."
+      },
+      {
+        "state": "expired_unsettled",
+        "at": 1792242687708,
+        "note": "Audited on-chain: the signed payment expired unused. This buyer can never be charged for it."
       }
     ],
     "input": "[redacted]",
@@ -1687,6 +1697,11 @@
         "state": "not_charged",
         "at": 1792242401125,
         "note": "HTTP 422: settlement cancelled. The signed authorization expires unused."
+      },
+      {
+        "state": "expired_unsettled",
+        "at": 1792242688627,
+        "note": "Audited on-chain: the signed payment expired unused. This buyer can never be charged for it."
       }
     ],
     "input": "[redacted]",
