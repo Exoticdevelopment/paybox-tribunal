@@ -627,6 +627,10 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
     }
     if (record.appeal) return c.json({ error: "already_appealed", appeal: record.appeal }, 409);
     if (Date.now() > record.createdAt + config.appealWindowMs) return c.json({ error: "appeal_window_closed" }, 409);
+    // A case restored from the public backup keeps its verdict but not the buyer's data: never judge an appeal blind.
+    if (record.input === "[redacted]") {
+      return c.json({ error: "evidence_only", detail: "This case was restored from the public record without the original data, so it can't be re-judged." }, 409);
+    }
 
     const ruling = await judge(effective(g, record.promises ?? []), { input: record.input, output: record.output, complaint });
     let credit: { voucher: string; usage: string } | null = null;
