@@ -172,6 +172,20 @@
       ],
       "judge": "skipped",
       "summary": "Failed 1 contract check(s): grounding."
+    },
+    {
+      "id": "8dca3505-2cd6-41da-92b5-d4efb2bcab32",
+      "service": "invoice",
+      "at": 1792244879700,
+      "contractVersion": "1.0.0",
+      "note": "Inflate the total",
+      "caught": true,
+      "rulesHit": [
+        "total",
+        "grounding"
+      ],
+      "judge": "skipped",
+      "summary": "Failed 2 contract check(s): total, grounding."
     }
   ],
   "proxies": [
