@@ -227,6 +227,165 @@
       "summary": "Failed 1 contract check(s): price."
     }
   ],
-  "proxies": [],
-  "promiseSets": {}
+  "proxies": [
+    {
+      "id": "g-usd-exchange-rates",
+      "slug": "usd-exchange-rates",
+      "title": "USD exchange rates",
+      "url": "https://api.frankfurter.dev/v1/latest?base=USD&symbols=EUR,MXN,BRL",
+      "method": "GET",
+      "promise": "EUR between 0.5 and 1.5, MXN between 10 and 30, BRL between 3 and 10, always includes rates",
+      "compiled": {
+        "engine": "ai",
+        "promises": [
+          {
+            "text": "EUR between 0.5 and 1.5",
+            "interpretation": "rates.EUR must be between 0.5 and 1.5",
+            "rule": {
+              "type": "numeric_bounds",
+              "field": "rates.EUR",
+              "min": 0.5,
+              "max": 1.5
+            },
+            "certainty": "deterministic"
+          },
+          {
+            "text": "MXN between 10 and 30",
+            "interpretation": "rates.MXN must be between 10 and 30",
+            "rule": {
+              "type": "numeric_bounds",
+              "field": "rates.MXN",
+              "min": 10,
+              "max": 30
+            },
+            "certainty": "deterministic"
+          },
+          {
+            "text": "BRL between 3 and 10",
+            "interpretation": "rates.BRL must be between 3 and 10",
+            "rule": {
+              "type": "numeric_bounds",
+              "field": "rates.BRL",
+              "min": 3,
+              "max": 10
+            },
+            "certainty": "deterministic"
+          },
+          {
+            "text": "always includes rates",
+            "interpretation": "rates field is required",
+            "rule": {
+              "type": "required_fields",
+              "fields": [
+                "rates"
+              ]
+            },
+            "certainty": "deterministic"
+          }
+        ],
+        "unverifiable": []
+      },
+      "sampleInput": {},
+      "sampleOutput": {
+        "amount": 1,
+        "base": "USD",
+        "date": "2026-10-16",
+        "rates": {
+          "BRL": 5.0828,
+          "EUR": 0.88865,
+          "MXN": 18.3835
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "base": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "rates": {
+            "type": "object",
+            "properties": {
+              "BRL": {
+                "type": "number"
+              },
+              "EUR": {
+                "type": "number"
+              },
+              "MXN": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "createdAt": 1792243787016,
+      "active": true
+    }
+  ],
+  "promiseSets": {
+    "g-usd-exchange-rates": [
+      {
+        "version": "1.1.0",
+        "text": "EUR between 0.5 and 1.5, MXN between 10 and 30, BRL between 3 and 10, always includes rates",
+        "compiled": {
+          "engine": "ai",
+          "promises": [
+            {
+              "text": "EUR between 0.5 and 1.5",
+              "interpretation": "rates.EUR must be between 0.5 and 1.5",
+              "rule": {
+                "type": "numeric_bounds",
+                "field": "rates.EUR",
+                "min": 0.5,
+                "max": 1.5
+              },
+              "certainty": "deterministic"
+            },
+            {
+              "text": "MXN between 10 and 30",
+              "interpretation": "rates.MXN must be between 10 and 30",
+              "rule": {
+                "type": "numeric_bounds",
+                "field": "rates.MXN",
+                "min": 10,
+                "max": 30
+              },
+              "certainty": "deterministic"
+            },
+            {
+              "text": "BRL between 3 and 10",
+              "interpretation": "rates.BRL must be between 3 and 10",
+              "rule": {
+                "type": "numeric_bounds",
+                "field": "rates.BRL",
+                "min": 3,
+                "max": 10
+              },
+              "certainty": "deterministic"
+            },
+            {
+              "text": "always includes rates",
+              "interpretation": "rates field is required",
+              "rule": {
+                "type": "required_fields",
+                "fields": [
+                  "rates"
+                ]
+              },
+              "certainty": "deterministic"
+            }
+          ],
+          "unverifiable": []
+        },
+        "publishedAt": 1792243799126,
+        "draftId": "g-usd-exchange-rates"
+      }
+    ]
+  }
 }
