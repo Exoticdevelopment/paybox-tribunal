@@ -358,9 +358,9 @@ export function createTribunal({ db, guarantees, paywall, judge, chain = viemCha
   });
 
   // ---------- Crash Test: Tribunal attacks each contract before buyers rely on it ----------
-  // Cached per contract version so repeated page loads don't re-run (and re-pay) the AI judge.
+  // Cached per contract version for an hour so repeated page loads don't re-run (and re-pay) the AI judge.
 
-  const CRASH_TTL_MS = 5 * 60_000;
+  const CRASH_TTL_MS = 60 * 60_000;
   const crashCache = new Map<string, { at: number; report: CrashReport & { contract: { version: string; hash: string } } }>();
 
   app.get("/:service/crash-test", async (c) => {

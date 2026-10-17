@@ -1,0 +1,225 @@
+{
+  "at": "2026-10-17T13:03:17.619Z",
+  "server": "https://paybox-tribunal.onrender.com",
+  "passed": 27,
+  "total": 31,
+  "results": [
+    {
+      "n": 1,
+      "area": "Pages",
+      "check": "GET / renders HTML for a browser",
+      "ok": true,
+      "detail": "200 · 39 KB"
+    },
+    {
+      "n": 2,
+      "area": "Pages",
+      "check": "GET /contracts renders HTML for a browser",
+      "ok": true,
+      "detail": "200 · 10 KB"
+    },
+    {
+      "n": 3,
+      "area": "Pages",
+      "check": "GET /invoice/contract renders HTML for a browser",
+      "ok": true,
+      "detail": "200 · 10 KB"
+    },
+    {
+      "n": 4,
+      "area": "Pages",
+      "check": "GET /certificates/key renders HTML for a browser",
+      "ok": true,
+      "detail": "200 · 8 KB"
+    },
+    {
+      "n": 5,
+      "area": "Pages",
+      "check": "Same contract URL gives agents JSON",
+      "ok": true,
+      "detail": "settlement after-validation, rails eip155 + solana"
+    },
+    {
+      "n": 6,
+      "area": "Pages",
+      "check": "AI backend answers",
+      "ok": false,
+      "detail": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+    },
+    {
+      "n": 7,
+      "area": "Compiler",
+      "check": "English, mixed certainty",
+      "ok": false,
+      "detail": "Cannot read properties of undefined (reading 'some')"
+    },
+    {
+      "n": 8,
+      "area": "Compiler",
+      "check": "Spanish wording",
+      "ok": true,
+      "detail": "ai · length_limit, numeric_grounding"
+    },
+    {
+      "n": 9,
+      "area": "Compiler",
+      "check": "Only subjective promises",
+      "ok": false,
+      "detail": "Cannot read properties of undefined (reading 'length')"
+    },
+    {
+      "n": 10,
+      "area": "Compiler",
+      "check": "Promise about a field the service doesn't have",
+      "ok": false,
+      "detail": "Cannot read properties of undefined (reading 'length')"
+    },
+    {
+      "n": 11,
+      "area": "Crash test",
+      "check": "invoice: every attack caught, honest output passes",
+      "ok": true,
+      "detail": "9/9 attacks caught, 2 honest passed"
+    },
+    {
+      "n": 12,
+      "area": "Crash test",
+      "check": "summary: every attack caught, honest output passes",
+      "ok": true,
+      "detail": "6/6 attacks caught, 2 honest passed"
+    },
+    {
+      "n": 13,
+      "area": "Crash test",
+      "check": "quote: every attack caught, honest output passes",
+      "ok": true,
+      "detail": "6/6 attacks caught, 2 honest passed"
+    },
+    {
+      "n": 14,
+      "area": "Challenge",
+      "check": "invoice: honest extraction → passes",
+      "ok": true,
+      "detail": "passed (judge upheld)"
+    },
+    {
+      "n": 15,
+      "area": "Challenge",
+      "check": "invoice: total inflated by 100 → caught",
+      "ok": true,
+      "detail": "caught by total, grounding"
+    },
+    {
+      "n": 16,
+      "area": "Challenge",
+      "check": "invoice: vendor invented → caught",
+      "ok": true,
+      "detail": "caught by grounding"
+    },
+    {
+      "n": 17,
+      "area": "Challenge",
+      "check": "summary: honest summary → passes",
+      "ok": true,
+      "detail": "passed (judge upheld)"
+    },
+    {
+      "n": 18,
+      "area": "Challenge",
+      "check": "summary: invented figure → caught",
+      "ok": true,
+      "detail": "caught by length, invented_numbers"
+    },
+    {
+      "n": 19,
+      "area": "Challenge",
+      "check": "summary: over the word limit → caught",
+      "ok": true,
+      "detail": "caught by length"
+    },
+    {
+      "n": 20,
+      "area": "Challenge",
+      "check": "quote: honest fresh quote → passes",
+      "ok": true,
+      "detail": "passed (judge abstained)"
+    },
+    {
+      "n": 21,
+      "area": "Challenge",
+      "check": "quote: price from 15 minutes ago → caught",
+      "ok": true,
+      "detail": "caught by freshness"
+    },
+    {
+      "n": 22,
+      "area": "Challenge",
+      "check": "quote: zero price → caught",
+      "ok": true,
+      "detail": "caught by price"
+    },
+    {
+      "n": 23,
+      "area": "Certificate",
+      "check": "Signed certificate of a real paid case verifies",
+      "ok": true,
+      "detail": "case 62445ee1 · Ed25519 valid"
+    },
+    {
+      "n": 24,
+      "area": "Certificate",
+      "check": "Tampered certificate is rejected",
+      "ok": true,
+      "detail": "forged verdict → valid: false"
+    },
+    {
+      "n": 25,
+      "area": "Certificate",
+      "check": "A different output doesn't match the judged hash",
+      "ok": true,
+      "detail": "matches: false"
+    },
+    {
+      "n": 26,
+      "area": "Security",
+      "check": "Paid route without a payment answers 402, never the result",
+      "ok": true,
+      "detail": "402 Payment Required"
+    },
+    {
+      "n": 27,
+      "area": "Security",
+      "check": "A forged payment header is refused",
+      "ok": true,
+      "detail": "402, nothing served"
+    },
+    {
+      "n": 28,
+      "area": "Security",
+      "check": "Registering an API needs the seller token",
+      "ok": true,
+      "detail": "403 without x-admin-token"
+    },
+    {
+      "n": 29,
+      "area": "Security",
+      "check": "Publishing a contract needs the seller token",
+      "ok": true,
+      "detail": "403 without x-admin-token"
+    },
+    {
+      "n": 30,
+      "area": "Security",
+      "check": "Public record never exposes buyers' data",
+      "ok": true,
+      "detail": "14 cases, all redacted"
+    },
+    {
+      "n": 31,
+      "area": "Trust",
+      "check": "No buyer ever paid for a broken promise",
+      "ok": true,
+      "detail": "14 judged · 7 refused before charge · 0 charged failures"
+    }
+  ]
+}

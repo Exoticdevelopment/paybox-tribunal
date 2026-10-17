@@ -97,7 +97,7 @@ async function viaApi<T>(req: StructuredRequest<T>): Promise<T | null> {
  * treated exactly like no answer.
  */
 // Free-tier models get overloaded (503) or rate-limited (429); try the next one instead of giving up.
-const GEMINI_FALLBACKS = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-flash-lite-latest"];
+const GEMINI_FALLBACKS = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-flash-lite-latest", "gemini-2.0-flash", "gemini-2.0-flash-lite"];
 
 async function viaGemini<T>(req: StructuredRequest<T>): Promise<T | null> {
   const models = [...new Set([config.geminiModel, ...GEMINI_FALLBACKS])];
