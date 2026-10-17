@@ -1,17 +1,6 @@
 {
   "challenges": [
     {
-      "id": "566d5aeb-af04-4b4e-af8c-6dc6c88ae9e4",
-      "service": "invoice",
-      "at": 1792242191697,
-      "contractVersion": "1.0.0",
-      "note": "e2e: honest sample",
-      "caught": false,
-      "rulesHit": [],
-      "judge": "upheld",
-      "summary": "Passed every contract check and the AI judge confirmed the output."
-    },
-    {
       "id": "1bba491d-1b10-4280-bcc9-f33344303684",
       "service": "invoice",
       "at": 1792242192104,
@@ -37,17 +26,6 @@
       ],
       "judge": "skipped",
       "summary": "Failed 1 contract check(s): grounding."
-    },
-    {
-      "id": "9fcd7529-53a6-4735-9654-5a42eea33f54",
-      "service": "summary",
-      "at": 1792242192940,
-      "contractVersion": "1.0.0",
-      "note": "e2e: honest sample",
-      "caught": false,
-      "rulesHit": [],
-      "judge": "upheld",
-      "summary": "Passed every contract check and the AI judge confirmed the output."
     },
     {
       "id": "8e5c456b-a40b-4fcb-9554-2e6797782629",
@@ -77,17 +55,6 @@
       "summary": "Failed 1 contract check(s): length."
     },
     {
-      "id": "774238d7-fd67-40a4-bc51-6e8ea7f2b38f",
-      "service": "quote",
-      "at": 1792242194140,
-      "contractVersion": "1.0.0",
-      "note": "e2e: honest sample",
-      "caught": false,
-      "rulesHit": [],
-      "judge": "abstained",
-      "summary": "Passed every contract check."
-    },
-    {
       "id": "0d1e0dac-0433-4b77-aeec-c32994d398b5",
       "service": "quote",
       "at": 1792242194589,
@@ -112,17 +79,6 @@
       ],
       "judge": "skipped",
       "summary": "Failed 1 contract check(s): price."
-    },
-    {
-      "id": "d101b7c8-4f89-4b9c-9073-be4ef24fb0d4",
-      "service": "invoice",
-      "at": 1792242354106,
-      "contractVersion": "1.0.0",
-      "note": "e2e: honest sample",
-      "caught": false,
-      "rulesHit": [],
-      "judge": "upheld",
-      "summary": "Passed every contract check and the AI judge confirmed the output."
     },
     {
       "id": "eb1220eb-eae7-4540-9217-86b02d509112",
@@ -152,17 +108,6 @@
       "summary": "Failed 1 contract check(s): grounding."
     },
     {
-      "id": "36b1a0f6-06d8-4043-85c7-256ca291e1d5",
-      "service": "summary",
-      "at": 1792242355311,
-      "contractVersion": "1.0.0",
-      "note": "e2e: honest sample",
-      "caught": false,
-      "rulesHit": [],
-      "judge": "upheld",
-      "summary": "Passed every contract check and the AI judge confirmed the output."
-    },
-    {
       "id": "3f7555a6-c4a8-488f-ae98-07b7fe6e442d",
       "service": "summary",
       "at": 1792242355696,
@@ -188,17 +133,6 @@
       ],
       "judge": "skipped",
       "summary": "Failed 1 contract check(s): length."
-    },
-    {
-      "id": "21d12f2e-288f-4632-89f5-14e222a8621b",
-      "service": "quote",
-      "at": 1792242356519,
-      "contractVersion": "1.0.0",
-      "note": "e2e: honest sample",
-      "caught": false,
-      "rulesHit": [],
-      "judge": "abstained",
-      "summary": "Passed every contract check."
     },
     {
       "id": "6132b0d1-433a-4f95-949e-f0d3cbedad6c",
